@@ -85,19 +85,19 @@ TC.pages = TC.pages || {};
         '<button type="button" data-view="lista" aria-pressed="' + (view === 'lista') + '">' + I('list') + 'Lista</button></div>';
 
       var summary = '<section class="agenda-summary card" aria-label="Resumo da semana">' +
-        '<div class="as-main"><span class="as-icon">' + I('calendar') + '</span><p><strong class="as-big tabular">' + aulas.length + '</strong> ' +
+        '<div class="as-main"><span class="as-icon">' + I('calendar') + '</span><p><strong class="as-big tabular">' + TC.ui.counter(aulas.length) + '</strong> ' +
         (aulas.length === 1 ? 'aula prevista' : 'aulas previstas') + ' ' + (isThisWeek ? 'esta semana' : 'nesta semana') + '</p></div>' +
         '<div class="as-stat">' + I('clock') + '<p><strong>' + U.fmtDuration(mins) + '</strong> de aula</p></div>' +
         '<div class="as-stat">' + I('users') + '<p><strong>' + U.plural(Object.keys(turmas).length, 'turma', 'turmas') + '</strong> atendidas</p></div>' +
-        '<div class="as-stat">' + I('bookOpen') + '<p><strong>' + U.plural(D.alocacoesDoProfessor(prof.id).length, 'matéria/turma', 'matérias/turmas') + '</strong> alocadas</p></div>' +
+        '<div class="as-stat">' + I('bookOpen') + '<p><strong>' + U.plural(D.resumoProfessor(prof.id).materias, 'matéria', 'matérias') + '</strong> lecionadas</p></div>' +
         '</section>';
 
       var body;
       if (!anyAloc) {
         body = '<section class="card">' + TC.ui.emptyState({
           illus: 'calendar', title: 'Sua agenda está vazia',
-          text: 'Crie uma alocação com os horários semanais para ver suas aulas aqui.',
-          action: '<a class="btn btn-primary" href="#/alocacoes?new=1">' + I('plus') + 'Nova alocação</a>'
+          text: 'Ainda não há matérias atribuídas a você. Quando a coordenação definir suas turmas e horários, as aulas aparecerão aqui.',
+          action: '<a class="btn" href="#/materias">' + I('book') + 'Ver matérias cadastradas</a>'
         }) + '</section>';
       } else if (!aulas.length) {
         body = '<section class="card">' + TC.ui.emptyState({

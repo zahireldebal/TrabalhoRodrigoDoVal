@@ -23,12 +23,6 @@ window.TC = window.TC || {};
       return { value: t.id, label: t.nome + ' · ' + t.turno, group: c ? c.codigo + ' — ' + c.nome : 'Sem curso' };
     });
   }
-  function materiaOptions() {
-    return D.materiasSorted().map(function (m) {
-      var c = D.curso(m.cursoId);
-      return { value: m.id, label: m.nome, group: c ? c.codigo + ' — ' + c.nome : 'Sem curso' };
-    });
-  }
   function list(values) { return values.map(function (v) { return { value: v, label: v }; }); }
 
   function unique(collection, field, message) {
@@ -117,7 +111,7 @@ window.TC = window.TC || {};
     defaultSort: 'nome',
     deleteGuard: function (r) {
       var a = D.alocacoesDaMateria(r.id).length;
-      if (a) return { message: 'Esta matéria possui ' + U.plural(a, 'alocação vinculada', 'alocações vinculadas') + ' (professor e turma com plano de aula). Exclua as alocações antes de excluir a matéria.', linkText: 'Ver alocações', linkHref: '#/alocacoes?materia=' + r.id, linkIcon: 'link' };
+      if (a) return { message: 'Esta matéria está em uso: ' + U.plural(a, 'turma tem', 'turmas têm') + ' aulas e plano de aula dela. Ela não pode ser excluída enquanto estiver sendo lecionada.' };
       return null;
     }
   };
@@ -160,7 +154,7 @@ window.TC = window.TC || {};
       var a = D.alunosCount(r.id);
       if (a) return { message: 'Esta turma possui ' + U.plural(a, 'aluno matriculado', 'alunos matriculados') + '. Mova ou exclua os alunos antes de excluir a turma.', linkText: 'Ver alunos da turma', linkHref: '#/alunos?turma=' + r.id, linkIcon: 'user' };
       var al = D.alocacoesDaTurma(r.id).length;
-      if (al) return { message: 'Esta turma possui ' + U.plural(al, 'alocação vinculada', 'alocações vinculadas') + '. Exclua as alocações antes de excluir a turma.', linkText: 'Ver alocações', linkHref: '#/alocacoes', linkIcon: 'link' };
+      if (al) return { message: 'Esta turma tem ' + U.plural(al, 'matéria em andamento', 'matérias em andamento') + ' com aulas e plano de aula. Ela não pode ser excluída enquanto estiver ativa.' };
       return null;
     }
   };
@@ -250,73 +244,20 @@ window.TC = window.TC || {};
         } },
       { key: 'area', label: 'Área', sort: function (r) { return r.area; }, render: function (r) { return esc(r.area); } },
       { key: 'titulacao', label: 'Titulação', sort: function (r) { return D.TITULACOES.indexOf(r.titulacao); }, render: function (r) { return esc(r.titulacao); } },
-      { key: 'aulas', label: 'Alocações', sort: function (r) { return D.alocacoesDoProfessor(r.id).length; },
-        render: function (r) { return countPill('link', D.alocacoesDoProfessor(r.id).length, 'alocação', 'alocações'); } }
+      { key: 'aulas', label: 'Aulas por semana', sort: function (r) { return D.alocacoesDoProfessor(r.id).reduce(function (s, a) { return s + D.aulasPorSemana(a); }, 0); },
+        render: function (r) {
+          var n = D.alocacoesDoProfessor(r.id).reduce(function (s, a) { return s + D.aulasPorSemana(a); }, 0);
+          return n ? countPill('calendar', n, 'aula', 'aulas') : '<span class="muted">Sem aulas</span>';
+        } }
     ],
     defaultSort: 'nome',
     deleteGuard: function (r) {
       var me = TC.app.currentProf();
       if (me && me.id === r.id) return { message: 'Você está conectado com este perfil. Troque de professor antes de excluí-lo.' };
       var a = D.alocacoesDoProfessor(r.id).length;
-      if (a) return { message: 'Este professor possui ' + U.plural(a, 'alocação vinculada', 'alocações vinculadas') + ' (matérias e turmas). Exclua as alocações antes de excluir o professor.', linkText: 'Ver alocações', linkHref: '#/alocacoes?professor=' + r.id, linkIcon: 'link' };
+      if (a) return { message: 'Este professor leciona ' + U.plural(a, 'matéria', 'matérias') + ' com aulas e plano de aula neste momento. Ele não pode ser excluído enquanto tiver turmas.', linkText: 'Ver matérias', linkHref: '#/materias', linkIcon: 'book' };
       return null;
     }
-  };
-
-  /* ---------- Alocações (professor × matéria × turma) ---------- */
-  E.alocacoes = {
-    collection: 'alocacoes', title: 'Alocações', singular: 'alocação', gender: 'f', icon: 'link',
-    lead: 'Defina qual professor leciona cada matéria em cada turma, com os horários semanais e a sala.',
-    fields: [
-      { name: 'professorId', label: 'Professor', type: 'select', required: true, reqMsg: 'Selecione o professor.', placeholder: 'Selecione o professor…', options: function () { return opt(D.professoresSorted()); } },
-      { name: 'materiaId', label: 'Matéria', type: 'select', required: true, reqMsg: 'Selecione a matéria.', placeholder: 'Selecione a matéria…', options: materiaOptions },
-      { name: 'turmaId', label: 'Turma', type: 'select', required: true, half: true, reqMsg: 'Selecione a turma.', placeholder: 'Selecione…', options: turmaOptions,
-        hint: 'Precisa ser do mesmo curso da matéria.',
-        validate: function (v, values) {
-          var m = D.materia(values.materiaId), t = D.turma(v);
-          return m && t && m.cursoId !== t.cursoId ? 'Esta turma é de outro curso. Escolha uma turma do mesmo curso da matéria.' : null;
-        } },
-      { name: 'sala', label: 'Sala', required: true, half: true, reqMsg: 'Informe a sala.', maxlength: 40, placeholder: 'Ex.: Laboratório 2', hint: 'Sala ou laboratório.' },
-      { name: 'horarios', label: 'Horários semanais', type: 'schedule', required: true, reqMsg: 'Adicione pelo menos um horário semanal.' }
-    ],
-    uniques: [{ field: 'materiaId', check: function (v, values, id) {
-      return S.all('alocacoes').some(function (a) { return a.id !== id && a.materiaId === v && a.turmaId === values.turmaId; })
-        ? 'Esta matéria já está alocada para esta turma.' : null;
-    } }],
-    search: function (r) {
-      var p = D.professor(r.professorId), m = D.materia(r.materiaId), t = D.turma(r.turmaId);
-      return [p && p.nome, m && m.nome, t && t.nome, r.sala].join(' ');
-    },
-    filters: [
-      { name: 'professor', label: 'Professor', options: function () { return opt(D.professoresSorted()); }, match: function (r, v) { return r.professorId === v; } },
-      { name: 'materia', label: 'Matéria', options: materiaOptions, match: function (r, v) { return r.materiaId === v; } }
-    ],
-    columns: [
-      { key: 'materia', label: 'Matéria', primary: true, sort: function (r) { var m = D.materia(r.materiaId); return m ? m.nome : ''; },
-        render: function (r) {
-          var m = D.materia(r.materiaId), t = D.turma(r.turmaId);
-          return cell(m ? m.nome : '—', (t ? esc(t.nome) : '') + ' · ' + U.plural((r.plano || []).length, 'etapa no plano', 'etapas no plano'));
-        } },
-      { key: 'professor', label: 'Professor', sort: function (r) { var p = D.professor(r.professorId); return p ? p.nome : ''; },
-        render: function (r) { var p = D.professor(r.professorId); return p ? esc(p.nome) : '—'; } },
-      { key: 'horarios', label: 'Horários', sort: function (r) { return (r.horarios || []).length; },
-        render: function (r) { return (r.horarios || []).map(function (h) { return '<span class="nowrap">' + esc(D.horarioLabel(h)) + '</span>'; }).join('<br>'); } },
-      { key: 'sala', label: 'Sala', sort: function (r) { return r.sala; }, render: function (r) { return esc(r.sala); } }
-    ],
-    defaultSort: 'materia',
-    deleteMessage: 'O plano de aula desta alocação também será excluído.',
-    beforeSave: function (values, existing) {
-      if (!existing) values.plano = [];
-      values.horarios = values.horarios.map(function (h) { return { dia: Number(h.dia), inicio: h.inicio, fim: h.fim }; });
-      return values;
-    },
-    deleteGuard: function () { return null; }
-  };
-
-  /** Human readable name of a record (used in dialogs and palette). */
-  E.alocacoes.nameOf = function (r) {
-    var m = D.materia(r.materiaId), t = D.turma(r.turmaId);
-    return (m ? m.nome : 'Alocação') + (t ? ' — ' + t.nome : '');
   };
 
   TC.entities = E;

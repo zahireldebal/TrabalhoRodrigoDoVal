@@ -13,10 +13,10 @@ TC.pages = TC.pages || {};
     return TC.domain.professoresSorted().map(function (p) {
       var r = TC.domain.resumoProfessor(p.id);
       return '<li><button type="button" class="profile-btn" data-login="' + esc(p.id) + '">' +
-        TC.ui.avatar(p.nome, 'lg') +
+        TC.ui.avatar(p.nome) +
         '<span class="pb-text"><span class="pb-name">' + esc(p.nome) + '</span>' +
-        '<span class="pb-sub">' + esc(p.area) + ' · ' + esc(p.titulacao) + '</span>' +
-        '<span class="pb-meta">' + U.plural(r.materias, 'matéria', 'matérias') + ' · ' + U.plural(r.turmas, 'turma', 'turmas') + '</span></span>' +
+        '<span class="pb-sub">' + esc(p.area) + '</span></span>' +
+        '<span class="pb-meta">' + (r.materias ? U.plural(r.materias, 'matéria', 'matérias') + '<br>' + U.plural(r.turmas, 'turma', 'turmas') : 'Novo perfil') + '</span>' +
         '<span class="pb-go">' + I('arrowRight') + '<span class="sr-only">Entrar como ' + esc(p.nome) + '</span></span></button></li>';
     }).join('');
   }
@@ -24,8 +24,8 @@ TC.pages = TC.pages || {};
   function chooseView() {
     return '<div class="login-card-inner">' +
       '<span class="eyebrow-pill">' + I('sparkle') + 'Protótipo navegável</span>' +
-      '<h1 tabindex="-1" data-page-title>Entrar no Teacher Class</h1>' +
-      '<p class="login-lead">Escolha um perfil de professor para explorar o sistema.</p>' +
+      '<h1 tabindex="-1" data-page-title>Bem-vindo ao Teacher Class</h1>' +
+      '<p class="login-lead">Escolha um perfil de professor para entrar.</p>' +
       '<ul class="profile-list" aria-label="Perfis de demonstração">' + profileList() + '</ul>' +
       '<div class="or-sep"><span>ou</span></div>' +
       '<button type="button" class="btn btn-lg btn-block" data-signup>' + I('userPlus') + 'Cadastrar-se como professor</button>' +
@@ -45,22 +45,22 @@ TC.pages = TC.pages || {};
   }
 
   TC.pages.login = function (app) {
+    var S = TC.store;
     app.innerHTML =
       '<div class="login">' +
       '<section class="login-brand" aria-label="Sobre o Teacher Class">' +
+      '<span class="lb-orb lb-orb-1" aria-hidden="true"></span><span class="lb-orb lb-orb-2" aria-hidden="true"></span>' +
       '<div class="lb-inner">' +
       '<div class="logo-badge">' + TC.ui.logoFull() + '</div>' +
       '<p class="lb-title">Seu planejamento acadêmico, organizado em um só lugar.</p>' +
       '<ul class="lb-features">' +
-      '<li>' + I('layers') + '<span><strong>Cursos, matérias e turmas</strong> com vínculos claros</span></li>' +
+      '<li>' + I('layers') + '<span><strong>' + S.count('cursos') + ' cursos, ' + S.count('materias') + ' matérias e ' + S.count('turmas') + ' turmas</strong> com vínculos claros</span></li>' +
       '<li>' + I('bookOpen') + '<span><strong>Plano de aula</strong> semana a semana</span></li>' +
       '<li>' + I('calendar') + '<span><strong>Agenda semanal</strong> com o total de aulas previstas</span></li>' +
       '</ul>' +
       '<p class="lb-foot">Equipe 6I · Análise e Desenvolvimento de Sistemas</p>' +
       '</div></section>' +
       '<main class="login-main" id="main" tabindex="-1">' +
-      '<button type="button" class="icon-btn bordered theme-toggle login-theme" data-theme-toggle aria-label="Tema escuro" aria-pressed="' +
-      (document.documentElement.getAttribute('data-theme') === 'dark') + '">' + I('sun', { cls: 'icon-sun' }) + I('moon', { cls: 'icon-moon' }) + '</button>' +
       '<div class="login-card" id="login-card">' + chooseView() + '</div>' +
       '</main></div>';
 
@@ -88,9 +88,8 @@ TC.pages = TC.pages || {};
     }
 
     app.querySelector('.login').addEventListener('click', function (e) {
-      var t = e.target.closest('[data-login], [data-signup], [data-back], [data-theme-toggle]');
+      var t = e.target.closest('[data-login], [data-signup], [data-back]');
       if (!t) return;
-      if (t.hasAttribute('data-theme-toggle')) { TC.app.toggleTheme(); return; }
       if (t.hasAttribute('data-login')) {
         var p = TC.domain.professor(t.getAttribute('data-login'));
         TC.toast.success('Olá, ' + U.firstName(p.nome) + '!', 'Você entrou como ' + p.nome + '.');

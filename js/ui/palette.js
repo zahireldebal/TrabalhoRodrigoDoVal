@@ -24,7 +24,6 @@ window.TC = window.TC || {};
       var novo = c.gender === 'f' ? 'Nova ' : 'Novo ';
       items.push({ group: 'Ações', icon: 'plus', title: novo + c.singular, sub: 'Abrir formulário de cadastro', href: '#/' + k + '?new=1', keywords: 'cadastrar criar adicionar' });
     });
-    items.push({ group: 'Ações', icon: 'moon', title: 'Alternar tema claro/escuro', sub: 'Mudar a aparência', run: function () { TC.app.toggleTheme(); }, keywords: 'dark escuro claro' });
     items.push({ group: 'Ações', icon: 'refresh', title: 'Restaurar dados de demonstração', sub: 'Voltar ao estado inicial', run: function () { TC.app.restoreDemo(); }, keywords: 'reset' });
     return items;
   }
