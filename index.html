@@ -6,24 +6,18 @@
   <title>Teacher Class</title>
   <meta name="description" content="Teacher Class — protótipo para professores organizarem cursos, matérias, turmas, períodos, plano de aula e agenda semanal.">
   <meta name="theme-color" content="#1B2A55">
-  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-  <!-- Apply the saved theme before the first paint (no flash). -->
-  <script>
-    (function () {
-      var t = null;
-      try { t = localStorage.getItem('tc-theme'); } catch (e) { /* storage blocked */ }
-      if (t !== 'light' && t !== 'dark') {
-        t = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      }
-      document.documentElement.setAttribute('data-theme', t);
-    })();
-  </script>
+  <meta name="color-scheme" content="light only">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="preload" as="image" href="assets/logo-escudo.webp">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/pages.css">
   <link rel="stylesheet" href="css/planning.css">
+  <link rel="stylesheet" href="css/motion.css">
   <link rel="stylesheet" href="css/print.css">
 </head>
 <body>
