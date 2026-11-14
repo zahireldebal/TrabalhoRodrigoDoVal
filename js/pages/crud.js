@@ -246,7 +246,14 @@ window.TC = window.TC || {};
 
       root.addEventListener('click', function (e) {
         var t = e.target.closest('[data-new], [data-edit], [data-delete], [data-sort], [data-clear]');
-        if (!t) return;
+        if (!t) {
+          // Mouse convenience: clicking anywhere on a row opens it (keyboard users have the Edit button)
+          var row = e.target.closest('tbody tr[data-id]');
+          if (row && !e.target.closest('a, button') && !String(window.getSelection())) {
+            openForm(TC.store.get(cfg.collection, row.getAttribute('data-id')));
+          }
+          return;
+        }
         if (t.hasAttribute('data-new')) openForm(null);
         else if (t.hasAttribute('data-edit')) openForm(TC.store.get(cfg.collection, t.getAttribute('data-edit')));
         else if (t.hasAttribute('data-delete')) remove(TC.store.get(cfg.collection, t.getAttribute('data-delete')));

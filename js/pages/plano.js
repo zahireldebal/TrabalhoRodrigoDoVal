@@ -1,4 +1,4 @@
-/* Plano de Aula (HU01): course → subject → class, summary and weekly timeline.
+/* Plano de Aula (HU01): course tabs → subject cards, summary and weekly timeline.
    Printable via css/print.css. */
 window.TC = window.TC || {};
 TC.pages = TC.pages || {};
@@ -9,43 +9,56 @@ TC.pages = TC.pages || {};
   var U = TC.util;
   var esc = U.esc;
   var I = TC.icon;
-  var sel = { cursoId: null, materiaId: null, alocId: null };
+  var sel = { cursoId: null, alocId: null };
 
   function myAlocs(profId) {
     var D = TC.domain;
-    return D.alocacoesDoProfessor(profId).filter(function (a) { return D.materia(a.materiaId) && D.turma(a.turmaId); });
+    return D.alocacoesDoProfessor(profId).filter(function (a) { return D.materia(a.materiaId) && D.turma(a.turmaId); })
+      .sort(function (x, y) { return D.materia(x.materiaId).nome.localeCompare(D.materia(y.materiaId).nome, 'pt-BR'); });
   }
 
-  /** Keeps the selection consistent with the professor's allocations. */
+  /** Keeps the selection (course → subject/class) consistent with the professor's classes. */
   function resolve(alocs, query) {
     var D = TC.domain;
     if (query.aloc) {
       var a = alocs.filter(function (x) { return x.id === query.aloc; })[0];
-      if (a) { sel.alocId = a.id; sel.materiaId = a.materiaId; sel.cursoId = D.materia(a.materiaId).cursoId; }
+      if (a) { sel.alocId = a.id; sel.cursoId = D.materia(a.materiaId).cursoId; }
     }
     var cursos = [];
     alocs.forEach(function (a) { var c = D.materia(a.materiaId).cursoId; if (cursos.indexOf(c) < 0) cursos.push(c); });
     if (cursos.indexOf(sel.cursoId) < 0) sel.cursoId = cursos[0] || null;
     var inCurso = alocs.filter(function (a) { return D.materia(a.materiaId).cursoId === sel.cursoId; });
-    var materias = [];
-    inCurso.forEach(function (a) { if (materias.indexOf(a.materiaId) < 0) materias.push(a.materiaId); });
-    if (materias.indexOf(sel.materiaId) < 0) sel.materiaId = materias[0] || null;
-    var turmas = inCurso.filter(function (a) { return a.materiaId === sel.materiaId; });
-    if (!turmas.some(function (a) { return a.id === sel.alocId; })) sel.alocId = turmas[0] ? turmas[0].id : null;
-    return { cursos: cursos, materias: materias, turmas: turmas };
+    if (!inCurso.some(function (a) { return a.id === sel.alocId; })) sel.alocId = inCurso[0] ? inCurso[0].id : null;
+    return { cursos: cursos, inCurso: inCurso, all: alocs };
   }
 
-  function selectors(opts) {
+  /** Step 1: course tabs. Step 2: subject cards (one per subject × class). */
+  function picker(opts) {
     var D = TC.domain;
-    function select(id, label, list, current, labelFn) {
-      return '<div class="field"><label for="' + id + '">' + label + '</label><select class="select" id="' + id + '"' + (list.length < 2 ? ' aria-describedby="' + id + '-only"' : '') + '>' +
-        list.map(function (v) { return '<option value="' + esc(v.id || v) + '"' + ((v.id || v) === current ? ' selected' : '') + '>' + esc(labelFn(v)) + '</option>'; }).join('') +
-        '</select>' + (list.length < 2 ? '<span class="sr-only" id="' + id + '-only">Única opção disponível</span>' : '') + '</div>';
-    }
-    return '<section class="card plan-picker" aria-label="Escolher curso, matéria e turma">' +
-      '<span class="step-dot" aria-hidden="true">1</span>' + select('pl-curso', 'Curso', opts.cursos, sel.cursoId, function (id) { var c = D.curso(id); return c.codigo + ' — ' + c.nome; }) +
-      '<span class="step-dot" aria-hidden="true">2</span>' + select('pl-materia', 'Matéria', opts.materias, sel.materiaId, function (id) { return D.materia(id).nome; }) +
-      '<span class="step-dot" aria-hidden="true">3</span>' + select('pl-turma', 'Turma', opts.turmas, sel.alocId, function (a) { var t = D.turma(a.turmaId); return t.nome + ' · ' + t.turno; }) +
+    var tabs = opts.cursos.map(function (id) {
+      var c = D.curso(id);
+      var n = opts.all.filter(function (a) { return D.materia(a.materiaId).cursoId === id; }).length;
+      var on = id === sel.cursoId;
+      return '<button type="button" class="course-tab cs ' + D.cursoStyle(id) + '" data-curso="' + esc(id) + '" aria-pressed="' + on + '">' +
+        '<span class="swatch" aria-hidden="true"></span><span class="ct-code">' + esc(c.codigo) + '</span>' +
+        '<span class="ct-name">' + esc(c.nome) + '</span><span class="ct-count">' + U.plural(n, 'matéria', 'matérias') + '</span></button>';
+    }).join('');
+    var cards = opts.inCurso.map(function (a) {
+      var m = D.materia(a.materiaId), t = D.turma(a.turmaId);
+      var on = a.id === sel.alocId;
+      return '<button type="button" class="subject-card" data-aloc="' + esc(a.id) + '" aria-pressed="' + on + '">' +
+        '<span class="sc-check" aria-hidden="true">' + I('check') + '</span>' +
+        '<span class="sc-title">' + esc(m.nome) + '</span>' +
+        '<span class="sc-meta">' + esc(t.nome) + ' · ' + esc(t.turno) + '</span>' +
+        '<span class="sc-stats"><span>' + I('user') + U.plural(D.alunosCount(t.id), 'aluno', 'alunos') + '</span>' +
+        '<span>' + I('calendar') + U.plural(D.aulasPorSemana(a), 'aula', 'aulas') + '/sem.</span></span></button>';
+    }).join('');
+    return '<section class="card plan-picker" aria-labelledby="pk-title">' +
+      '<h2 class="sr-only" id="pk-title">Escolher curso e matéria</h2>' +
+      '<div class="pk-step"><p class="pk-label" id="pk-curso"><span class="step-dot" aria-hidden="true">1</span>Curso</p>' +
+      '<div class="course-tabs" role="group" aria-labelledby="pk-curso">' + tabs + '</div></div>' +
+      '<div class="pk-step"><p class="pk-label" id="pk-materia"><span class="step-dot" aria-hidden="true">2</span>Matéria e turma</p>' +
+      '<div class="subject-cards" role="group" aria-labelledby="pk-materia">' + cards + '</div></div>' +
       '</section>';
   }
 
@@ -171,21 +184,28 @@ TC.pages = TC.pages || {};
 
     if (!alocs.length) {
       root.innerHTML = head + '<section class="card">' + TC.ui.emptyState({
-        illus: 'book', title: 'Você ainda não tem matérias alocadas',
-        text: 'Crie uma alocação (matéria + turma + horários) para montar seu plano de aula.',
-        action: '<a class="btn btn-primary" href="#/alocacoes?new=1">' + I('plus') + 'Nova alocação</a>'
+        illus: 'book', title: 'Nenhuma matéria atribuída a você ainda',
+        text: 'Quando a coordenação atribuir matérias e turmas ao seu perfil, o plano de aula de cada uma aparecerá aqui.',
+        action: '<a class="btn" href="#/materias">' + I('book') + 'Ver matérias cadastradas</a>'
       }) + '</section>';
       return;
     }
 
     if (query.aloc) TC.router.clean('/plano');
 
-    function paint(focusId) {
+    function paint(focusSel, bodyOnly) {
       var opts = resolve(alocs, query);
       query = {};
       var a = D.alocacao(sel.alocId);
-      root.innerHTML = head + selectors(opts) + '<div class="plan-body">' + summary(a, prof) + timeline(a) + '</div>';
-      if (focusId) { var el = root.querySelector('#' + focusId); if (el) el.focus(); }
+      var body = '<div class="plan-body">' + summary(a, prof) + timeline(a) + '</div>';
+      if (bodyOnly && root.querySelector('.plan-picker')) {
+        var pk = root.querySelector('.plan-picker');
+        pk.outerHTML = picker(opts);
+        root.querySelector('.plan-body').outerHTML = body;
+      } else {
+        root.innerHTML = head + picker(opts) + body;
+      }
+      if (focusSel) { var el = root.querySelector(focusSel); if (el) el.focus(); }
     }
 
     function openStep(a, entry) {
@@ -213,13 +233,24 @@ TC.pages = TC.pages || {};
       });
     }
 
-    root.addEventListener('change', function (e) {
-      if (e.target.id === 'pl-curso') { sel.cursoId = e.target.value; sel.materiaId = null; sel.alocId = null; paint('pl-curso'); }
-      if (e.target.id === 'pl-materia') { sel.materiaId = e.target.value; sel.alocId = null; paint('pl-materia'); }
-      if (e.target.id === 'pl-turma') { sel.alocId = e.target.value; paint('pl-turma'); }
-    });
-
     root.addEventListener('click', function (e) {
+      var tab = e.target.closest('[data-curso]');
+      if (tab) {
+        var cid = tab.getAttribute('data-curso');
+        if (cid !== sel.cursoId) { sel.cursoId = cid; sel.alocId = null; paint('[data-curso="' + cid + '"]', true); }
+        return;
+      }
+      var card = e.target.closest('[data-aloc]');
+      if (card) {
+        sel.alocId = card.getAttribute('data-aloc');
+        paint('[data-aloc="' + sel.alocId + '"]', true);
+        // On small screens the plan is below the cards: bring it into view
+        if (window.innerWidth < 768) {
+          var body = root.querySelector('.plan-body');
+          if (body) body.scrollIntoView({ behavior: U.reducedMotion() ? 'auto' : 'smooth', block: 'start' });
+        }
+        return;
+      }
       var t = e.target.closest('[data-print], [data-add-step], [data-edit-step], [data-del-step]');
       if (!t) return;
       var a = D.alocacao(sel.alocId);

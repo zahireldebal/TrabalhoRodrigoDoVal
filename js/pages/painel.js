@@ -49,7 +49,7 @@ TC.pages = TC.pages || {};
         '<span class="hn-row">' + I('mapPin') + esc(nx.aula.sala) + '</span>' +
         '<span class="hn-cta">Abrir plano de aula ' + I('arrowRight') + '</span></a>'
       : '<div class="hero-next"><span class="hn-label">' + I('clock') + 'Próxima aula</span><span class="hn-title">Nenhuma aula prevista</span>' +
-        '<span class="hn-row">Quando houver alocações com horários, a próxima aula aparecerá aqui.</span></div>';
+        '<span class="hn-row">Quando houver matérias atribuídas a você, a próxima aula aparecerá aqui.</span></div>';
 
     return '<section class="hero" aria-labelledby="hero-title">' +
       '<div class="hero-text">' +
@@ -75,7 +75,7 @@ TC.pages = TC.pages || {};
       return '<a class="kpi card hoverable ' + k.tone + '" href="' + k.href + '">' +
         '<span class="kpi-icon">' + I(k.icon) + '</span>' +
         '<span class="kpi-label">' + k.label + ' <span class="sr-only">em que você leciona</span></span>' +
-        '<span class="kpi-value">' + k.value + '</span>' +
+        '<span class="kpi-value">' + TC.ui.counter(k.value) + '</span>' +
         '<span class="kpi-sub">' + esc(k.sub) + '</span></a>';
     }).join('') + '</section>';
   }
@@ -118,7 +118,7 @@ TC.pages = TC.pages || {};
       '<div class="card-head"><h2 id="week-title"><span class="h-icon">' + I('calendar') + '</span>Aulas desta semana</h2>' +
       '<a class="card-link" href="#/agenda">Agenda ' + I('arrowRight') + '</a></div>' +
       '<div class="card-body">' +
-      '<p class="week-total"><strong class="tabular">' + aulas.length + '</strong> <span>' + (aulas.length === 1 ? 'aula prevista' : 'aulas previstas') + '<br><span class="muted">' + U.fmtDuration(mins) + ' · ' + esc(U.fmtRange(monday, U.addDays(monday, 5))) + '</span></span></p>' +
+      '<p class="week-total"><strong class="tabular">' + TC.ui.counter(aulas.length) + '</strong> <span>' + (aulas.length === 1 ? 'aula prevista' : 'aulas previstas') + '<br><span class="muted">' + U.fmtDuration(mins) + ' · ' + esc(U.fmtRange(monday, U.addDays(monday, 5))) + '</span></span></p>' +
       '<ol class="week-bars" aria-label="Aulas por dia da semana">' + days.map(function (x) {
         return '<li class="' + (x.today ? 'is-today' : '') + (x.n ? '' : ' is-zero') + '">' +
           '<span class="wb-value">' + x.n + '</span>' +
@@ -143,8 +143,8 @@ TC.pages = TC.pages || {};
         '<div class="legend" aria-label="Legenda dos cursos">' + cursos.map(function (c) {
           return '<span class="legend-item cs ' + TC.domain.cursoStyle(c.id) + '"><span class="swatch" aria-hidden="true"></span>' + esc(c.codigo) + ' — ' + esc(c.nome) + '</span>';
         }).join('') + '</div>'
-      : TC.ui.emptyState({ illus: 'folder', small: true, level: 'h3', title: 'Sem matérias alocadas', text: 'Crie uma alocação para ver quantos alunos você tem em cada matéria.',
-        action: '<a class="btn btn-primary btn-sm" href="#/alocacoes?new=1">' + I('plus') + 'Nova alocação</a>' });
+      : TC.ui.emptyState({ illus: 'folder', small: true, level: 'h3', title: 'Nenhuma matéria atribuída ainda',
+        text: 'Quando a coordenação atribuir matérias e turmas a você, a quantidade de alunos de cada matéria aparecerá aqui.' });
     return '<section class="card dash-students" aria-labelledby="stu-title">' +
       '<div class="card-head"><h2 id="stu-title"><span class="h-icon">' + I('users') + '</span>Alunos por matéria</h2>' +
       '<span class="card-sub">Soma dos alunos das turmas</span></div>' +
@@ -154,7 +154,7 @@ TC.pages = TC.pages || {};
   function shortcuts() {
     var items = [
       ['/cursos', 'layers', 'Novo curso'], ['/materias', 'book', 'Nova matéria'], ['/turmas', 'users', 'Nova turma'],
-      ['/alunos', 'user', 'Novo aluno'], ['/professores', 'idCard', 'Novo professor'], ['/alocacoes', 'link', 'Nova alocação']
+      ['/alunos', 'user', 'Novo aluno'], ['/professores', 'idCard', 'Novo professor'], ['/periodos', 'calendarRange', 'Novo período']
     ];
     return '<section class="card dash-shortcuts" aria-labelledby="sc-title">' +
       '<div class="card-head"><h2 id="sc-title"><span class="h-icon">' + I('plus') + '</span>Atalhos</h2>' +

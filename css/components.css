@@ -50,7 +50,6 @@
   --btn-fg: #fff;
   --btn-border: transparent;
 }
-:root[data-theme="dark"] .btn-danger { --btn-fg: #1A0F12; }
 .btn-danger:hover { border-color: transparent; filter: brightness(1.06); }
 
 .btn-ghost {
@@ -85,9 +84,6 @@
 .icon-btn-sm { width: 34px; height: 34px; border-radius: 9px; }
 .icon-btn-sm svg { width: 17px; height: 17px; }
 
-.theme-toggle .icon-moon { display: none; }
-:root[data-theme="dark"] .theme-toggle .icon-sun { display: none; }
-:root[data-theme="dark"] .theme-toggle .icon-moon { display: block; }
 
 .kbd {
   display: inline-flex;
@@ -306,9 +302,6 @@
   background-position: right 12px center;
   background-size: 16px;
 }
-:root[data-theme="dark"] .select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23A5AFCE' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-}
 .input::placeholder, .textarea::placeholder { color: var(--text-muted); opacity: .85; }
 .input:hover, .select:hover, .textarea:hover { border-color: var(--text-muted); }
 .input:focus-visible, .select:focus-visible, .textarea:focus-visible,
@@ -467,7 +460,7 @@ th[aria-sort] .th-sort svg { opacity: 1; color: var(--accent-ink); }
   border-bottom: 1px solid var(--border);
   vertical-align: middle;
 }
-.data-table tbody tr { transition: background-color var(--dur-fast) var(--ease); }
+.data-table tbody tr { transition: background-color var(--dur-fast) var(--ease); cursor: pointer; }
 .data-table tbody tr:hover { background: var(--surface-2); }
 .data-table tbody tr:last-child td { border-bottom: 0; }
 .data-table .cell-main { display: flex; align-items: center; gap: 12px; min-width: 0; }
@@ -830,3 +823,9 @@ th[aria-sort] .th-sort svg { opacity: 1; color: var(--accent-ink); }
 .inline-alert svg { width: 18px; height: 18px; color: var(--info-ink); margin-top: 2px; }
 .inline-alert.warn { background: var(--warning-soft); }
 .inline-alert.warn svg { color: var(--warning-ink); }
+
+/* Mobile "Mais" sheet: cadastros as a 2-column grid */
+.sheet-grid { grid-template-columns: 1fr 1fr; }
+.sheet-grid .sheet-link { padding: 10px; font-size: .9rem; }
+
+.logo-img { display: block; max-width: 100%; height: auto; }

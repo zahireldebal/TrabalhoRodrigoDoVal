@@ -7,41 +7,17 @@ window.TC = window.TC || {};
   var esc = TC.util.esc;
   var I = TC.icon;
 
-  /* ---------- Brand ---------- */
-  var MARK_BODY =
-    '<path d="M32 3.5 55 10.5V30c0 14.5-9.5 24.5-23 30.5C18.5 54.5 9 44.5 9 30V10.5Z" fill="#1B2A55"/>' +
-    '<path d="M32 8.2 50.6 13.8V30c0 11.8-7.4 20.1-18.6 25.4C20.8 50.1 13.4 41.8 13.4 30V13.8Z" fill="none" stroke="#F28C28" stroke-width="1.8"/>' +
-    '<path d="M18.5 25.5c3-7 9.5-9.4 9-4.6-.4 3.6-4.6 6.2-2.4 6.6 2 .4 5.2-3.2 7.4-6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>' +
-    '<path d="M17 38.6c4.5-2.3 9.5-2.3 14 .3v10.3c-4.5-2.5-9.5-2.5-14-.3Z" fill="#fff"/>' +
-    '<path d="M47 38.6c-4.5-2.3-9.5-2.3-14 .3v10.3c4.5-2.5 9.5-2.5 14-.3Z" fill="#fff"/>' +
-    '<path d="M20 41.6c2.6-.9 5.4-.9 8 .4M20 44.6c2.6-.9 5.4-.9 8 .4M36 42c2.6-1.3 5.4-1.3 8-.4M36 45c2.6-1.3 5.4-1.3 8-.4" stroke="#F28C28" stroke-width="1.1" stroke-linecap="round" fill="none"/>' +
-    '<path d="M15.6 50.2c5.2-2.3 11-2.1 16.4.6 5.4-2.7 11.2-2.9 16.4-.6" fill="none" stroke="#F28C28" stroke-width="1.9" stroke-linecap="round"/>' +
-    '<g transform="rotate(40 36 28)">' +
-    '<rect x="33" y="7" width="6.4" height="31" rx="3.2" fill="#2A3D75" stroke="#fff" stroke-width="1.5"/>' +
-    '<rect x="33" y="10" width="6.4" height="4.2" fill="#F28C28"/>' +
-    '<rect x="33" y="30.5" width="6.4" height="2.6" fill="#F28C28"/>' +
-    '<path d="M33.4 38h5.6l-2.8 7.2Z" fill="#fff" stroke="#fff" stroke-width="1" stroke-linejoin="round"/>' +
-    '<path d="M35.2 13.5v15" stroke="#fff" stroke-opacity=".55" stroke-width="1.1" stroke-linecap="round"/>' +
-    '</g>';
-
+  /* ---------- Brand (logo extracted from the team's original artwork) ---------- */
   function logoMark(label) {
-    var a11y = label ? 'role="img" aria-label="' + esc(label) + '"' : 'aria-hidden="true" focusable="false"';
-    return '<svg viewBox="0 0 64 64" ' + a11y + '>' + MARK_BODY + '</svg>';
+    return '<img class="logo-img" src="assets/logo-escudo.webp" width="256" height="256" decoding="async" alt="' + esc(label || '') + '">';
   }
 
-  /** Full circular logo. `textColor` lets it sit on dark or light backgrounds. */
-  function logoFull(textColor) {
-    var c = textColor || '#1B2A55';
-    return '<svg class="logo-full" viewBox="0 0 240 240" role="img" aria-label="Teacher Class — Aprender, Ensinar, Organizar">' +
-      '<defs><path id="tc-arc-top" d="M28 120a92 92 0 0 1 184 0"/><path id="tc-arc-bottom" d="M20 120a100 100 0 0 0 200 0"/></defs>' +
-      '<text font-family="Plus Jakarta Sans, Inter, sans-serif" font-weight="800" font-size="25" letter-spacing="2.5" fill="' + c + '">' +
-      '<textPath href="#tc-arc-top" startOffset="50%" text-anchor="middle">TEACHER CLASS</textPath></text>' +
-      '<text font-family="Plus Jakarta Sans, Inter, sans-serif" font-weight="700" font-size="13.5" letter-spacing=".4" fill="' + c + '">' +
-      '<textPath href="#tc-arc-bottom" startOffset="50%" text-anchor="middle">Aprender <tspan fill="#F28C28">•</tspan> Ensinar <tspan fill="#F28C28">•</tspan> Organizar</textPath></text>' +
-      '<g transform="translate(56 54) scale(2)">' + MARK_BODY + '</g></svg>';
+  function logoFull() {
+    return '<img class="logo-img logo-full" src="assets/logo-teacher-class.webp" width="600" height="600" decoding="async" ' +
+      'alt="Teacher Class — Aprender, Ensinar, Organizar">';
   }
 
-  /* ---------- Illustrations for empty states (theme-aware via CSS vars) ---------- */
+  /* ---------- Illustrations for empty states ---------- */
   var ILLUS = {
     folder:
       '<ellipse cx="90" cy="118" rx="70" ry="8" fill="var(--surface-3)"/>' +
@@ -124,8 +100,32 @@ window.TC = window.TC || {};
       '</header>';
   }
 
+  /** Number that counts up on first paint (screen readers get the final value). */
+  function counter(value) {
+    return '<span aria-hidden="true" data-count-to="' + Number(value) + '">' + Number(value) + '</span><span class="sr-only">' + Number(value) + '</span>';
+  }
+
+  function countUp(root) {
+    if (TC.util.reducedMotion()) return;
+    Array.prototype.forEach.call(root.querySelectorAll('[data-count-to]'), function (el, i) {
+      var target = Number(el.getAttribute('data-count-to'));
+      if (!target) return;
+      var start = null, dur = 700 + Math.min(target, 40) * 8, delay = i * 60;
+      el.textContent = '0';
+      function step(ts) {
+        if (start === null) start = ts + delay;
+        var t = Math.max(0, Math.min(1, (ts - start) / dur));
+        var eased = 1 - Math.pow(1 - t, 3);
+        el.textContent = Math.round(target * eased);
+        if (t < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }
+
   TC.ui = TC.ui || {};
   Object.assign(TC.ui, {
+    counter: counter, countUp: countUp,
     logoMark: logoMark, logoFull: logoFull, emptyState: emptyState, courseChip: courseChip,
     avatar: avatar, turnoBadge: turnoBadge, periodoBadge: periodoBadge, pageHead: pageHead
   });

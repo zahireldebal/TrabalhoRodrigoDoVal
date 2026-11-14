@@ -33,10 +33,11 @@
   border-radius: var(--radius);
 }
 .brand-mark {
-  width: 44px; height: 44px;
-  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .25));
+  flex-shrink: 0;
+  width: 60px; height: 60px;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, .35));
 }
-.brand-mark svg { width: 100%; height: 100%; }
+.brand-mark img { width: 100%; height: 100%; object-fit: contain; }
 .brand-name {
   display: block;
   font-family: var(--font-display);
@@ -142,6 +143,8 @@
 }
 .sidebar-btn svg { width: 18px; height: 18px; }
 .sidebar-btn:hover { background: rgba(255, 255, 255, .07); color: #fff; }
+.sidebar-logout { color: #FFD3A8; }
+.sidebar-logout:hover { background: rgba(242, 140, 40, .16); color: #fff; }
 .sidebar-btn:focus-visible { outline-color: #9CCBF5; }
 
 /* ---------- Main column ---------- */
@@ -169,7 +172,7 @@
 .topbar.is-scrolled { border-bottom-color: var(--border); }
 
 .topbar-brand { display: none; align-items: center; gap: 10px; text-decoration: none; color: var(--heading); }
-.topbar-brand svg { width: 34px; height: 34px; }
+.topbar-brand img { width: 38px; height: 38px; object-fit: contain; }
 .topbar-brand span { font-family: var(--font-display); font-weight: 800; font-size: 1rem; }
 
 .search-trigger {

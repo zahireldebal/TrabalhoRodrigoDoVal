@@ -29,16 +29,16 @@
 }
 .lb-inner { position: relative; max-width: 440px; text-align: center; }
 .logo-badge {
-  width: min(300px, 70vw);
+  width: min(320px, 70vw);
   aspect-ratio: 1;
   margin: 0 auto 28px;
-  padding: 18px;
+  padding: 14px;
   border-radius: 50%;
   background: #fff;
   box-shadow: 0 30px 60px rgba(0, 0, 0, .35), 0 0 0 10px rgba(255, 255, 255, .06), 0 0 0 22px rgba(255, 255, 255, .03);
   animation: float-in .8s var(--ease-out) both;
 }
-.logo-badge svg { width: 100%; height: 100%; }
+.logo-badge img { width: 100%; height: 100%; object-fit: contain; }
 @keyframes float-in { from { opacity: 0; transform: translateY(14px) scale(.96); } to { opacity: 1; transform: none; } }
 .lb-title {
   font-family: var(--font-display);
@@ -65,7 +65,6 @@
   padding: 48px 24px;
   background: var(--bg);
 }
-.login-theme { position: absolute; top: 20px; right: 20px; }
 .login-card {
   width: min(480px, 100%);
   padding: 34px;
@@ -90,13 +89,13 @@
 }
 .eyebrow-pill svg { width: 15px; height: 15px; }
 .login-lead { margin: 8px 0 22px; color: var(--text-muted); }
-.profile-list { display: grid; gap: 10px; }
+.profile-list { display: grid; gap: 8px; }
 .profile-btn {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   width: 100%;
-  padding: 14px;
+  padding: 10px 12px;
   border: 1.5px solid var(--border);
   border-radius: 16px;
   background: var(--surface);
@@ -108,7 +107,7 @@
 .pb-text { flex: 1; min-width: 0; }
 .pb-name { display: block; font-weight: 700; color: var(--text); }
 .pb-sub { display: block; font-size: .84rem; color: var(--text-muted); }
-.pb-meta { display: block; margin-top: 2px; font-size: .78rem; color: var(--accent-ink); font-weight: 600; }
+.pb-meta { flex-shrink: 0; font-size: .74rem; line-height: 1.35; color: var(--accent-ink); font-weight: 600; text-align: right; }
 .pb-go {
   display: grid; place-items: center;
   width: 36px; height: 36px;
@@ -134,8 +133,6 @@
   .lb-title { font-size: 1.15rem; max-width: 320px; margin: 0 auto; }
   .login-main { padding: 24px 16px 40px; place-items: start center; }
   .login-card { padding: 24px 20px; margin-top: -8px; }
-  .login-theme { top: -56px; right: 16px; }
-  .login-theme { background: rgba(255, 255, 255, .1); border-color: rgba(255, 255, 255, .2); color: #fff; }
 }
 
 /* =================== Painel =================== */
@@ -289,8 +286,7 @@
   animation: grow-y .7s var(--ease-out) both;
   transform-origin: bottom;
 }
-:root[data-theme="dark"] .wb-bar { background: linear-gradient(180deg, #8FB3FF, #5277D6); }
-.week-bars .is-today .wb-bar, :root[data-theme="dark"] .week-bars .is-today .wb-bar {
+.week-bars .is-today .wb-bar {
   background-color: var(--orange-500);
   background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, .35) 0 3px, transparent 3px 7px);
 }
@@ -308,7 +304,7 @@
   gap: 14px;
 }
 .hb-label { min-width: 0; }
-.hb-name { display: block; font-weight: 600; font-size: .9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hb-name { display: block; font-weight: 600; font-size: .9rem; line-height: 1.3; }
 .hb-sub { display: flex; align-items: center; gap: 6px; margin-top: 3px; font-size: .76rem; color: var(--text-muted); }
 .hb-sub .course-chip { font-size: .68rem; padding: 1px 7px 1px 2px; }
 .hb-sub .course-chip .swatch { width: 13px; height: 13px; }
@@ -321,12 +317,14 @@
 .legend-item { display: inline-flex; align-items: center; gap: 8px; font-size: .8rem; color: var(--text-muted); }
 .legend-item .swatch { width: 22px; height: 12px; border-radius: 4px; }
 
-.shortcut-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.shortcut-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 .shortcut {
+  position: relative;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 10px;
-  padding: 12px;
+  padding: 14px 12px;
   border: 1px solid var(--border);
   border-radius: 14px;
   background: var(--surface);
@@ -337,7 +335,7 @@
 }
 .sc-icon { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--surface-3); color: var(--brand-ink); }
 .sc-icon svg { width: 18px; height: 18px; }
-.shortcut .sc-plus { width: 16px; height: 16px; margin-left: auto; color: var(--text-muted); transition: transform var(--dur) var(--ease), color var(--dur) var(--ease); }
+.shortcut .sc-plus { position: absolute; top: 12px; right: 12px; width: 16px; height: 16px; color: var(--text-muted); transition: transform var(--dur) var(--ease), color var(--dur) var(--ease); }
 .shortcut:hover .sc-plus { color: var(--accent-ink); transform: rotate(90deg); }
 
 @media (max-width: 1180px) {
@@ -364,5 +362,17 @@
   .kpis { grid-template-columns: 1fr 1fr; }
   .kpi { grid-template-columns: 1fr; grid-template-areas: "icon" "label" "value" "sub"; row-gap: 2px; }
   .kpi-icon { margin-bottom: 6px; }
-  .shortcut-grid { grid-template-columns: 1fr; }
+  .shortcut-grid { grid-template-columns: 1fr 1fr; }
 }
+
+/* Floating light orbs on the brand panel */
+.lb-orb { position: absolute; border-radius: 50%; filter: blur(50px); opacity: .55; pointer-events: none; }
+.lb-orb-1 { width: 320px; height: 320px; top: -80px; right: -60px; background: #F28C28; animation: orb 14s ease-in-out infinite alternate; }
+.lb-orb-2 { width: 280px; height: 280px; bottom: -70px; left: -60px; background: #2F8FD1; animation: orb 18s ease-in-out infinite alternate-reverse; }
+@keyframes orb { from { transform: translate(0, 0) scale(1); } to { transform: translate(-40px, 50px) scale(1.15); } }
+.logo-badge { transition: transform .6s var(--ease-out); }
+.logo-badge:hover { transform: rotate(-3deg) scale(1.03); }
+.pb-sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pb-text { min-width: 0; }
+@media (max-width: 460px) { .pb-meta { display: none; } }
+@media (prefers-reduced-motion: reduce) { .lb-orb { animation: none; } }

@@ -1,4 +1,4 @@
-/* Design tokens: fonts, brand palette, light & dark themes */
+/* Design tokens: fonts, brand palette and light theme */
 
 @font-face {
   font-family: "Inter";
@@ -55,9 +55,8 @@
   --bottomnav-h: 64px;
 }
 
-:root,
-:root[data-theme="light"] {
-  color-scheme: light;
+:root {
+  color-scheme: light only;
   --bg: #F6F8FC;
   --bg-accent: #EEF2FA;
   --surface: #FFFFFF;
@@ -99,51 +98,6 @@
   --sidebar-bg-2: #1B2A55;
   --sidebar-text: #C9D2EC;
   --sidebar-muted: #9AA7CD;
-  --overlay: rgba(11, 18, 41, .52);
+  --overlay: rgba(14, 22, 48, .34);
   --skeleton: #E8EDF6;
-}
-
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --bg: #0B1229;
-  --bg-accent: #0F1834;
-  --surface: #131C3B;
-  --surface-2: #18234A;
-  --surface-3: #1F2C58;
-  --border: #26335F;
-  --border-strong: #3A4A80;
-  --text: #E8ECF7;
-  --text-muted: #A5AFCE;
-  --heading: #F4F6FC;
-
-  --primary: #F59A40;
-  --primary-hover: #F8AE63;
-  --on-primary: #111B3D;
-  --brand: #8FB3FF;
-  --brand-ink: #C7D6FF;
-  --accent-ink: #F7AE66;
-  --accent-soft: rgba(242, 140, 40, .16);
-
-  --success-ink: #6BD9A0;
-  --success-soft: rgba(59, 170, 110, .18);
-  --info-ink: #7CC2F5;
-  --info-soft: rgba(47, 143, 209, .2);
-  --danger: #F06B66;
-  --danger-ink: #FF9893;
-  --danger-soft: rgba(214, 69, 65, .2);
-  --warning-ink: #FFCF7A;
-  --warning-soft: rgba(255, 191, 71, .16);
-
-  --focus: #7CC2F5;
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, .3);
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3), 0 2px 6px rgba(0, 0, 0, .25);
-  --shadow: 0 2px 4px rgba(0, 0, 0, .25), 0 10px 28px rgba(0, 0, 0, .35);
-  --shadow-lg: 0 24px 60px rgba(0, 0, 0, .55);
-
-  --sidebar-bg: #0E1633;
-  --sidebar-bg-2: #121C3F;
-  --sidebar-text: #C9D2EC;
-  --sidebar-muted: #8E9BC4;
-  --overlay: rgba(3, 6, 18, .66);
-  --skeleton: #1F2C58;
 }
