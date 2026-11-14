@@ -31,10 +31,12 @@ Na tela inicial:
 | **Painel** | Saudação, próxima aula, indicadores (cursos, matérias, turmas, alunos), aulas de hoje, gráfico de aulas da semana, gráfico de alunos por matéria e atalhos para cadastrar. |
 | **Plano de Aula** | Selecionar Curso → Matéria → Turma e ver ementa, carga horária, aulas por semana, alunos e a linha do tempo semanal do plano. É possível adicionar, editar e excluir etapas, e imprimir ou salvar em PDF. |
 | **Agenda Semanal** | Grade de segunda a sábado (matéria, turma, horário e sala), resumo "X aulas previstas esta semana / Y horas", navegação entre semanas e visualização em lista (automática no celular). |
-| **Cadastros** | Cursos, Matérias, Turmas, Períodos, Alunos, Professores e Alocações. Cada lista tem busca, filtros e ordenação, formulário em painel lateral, edição e exclusão com confirmação. |
-| **Extras** | Busca global com `Ctrl + K`, tema claro/escuro (lembrado no navegador), notificações de sucesso e erro, estados vazios ilustrados e layout responsivo. |
+| **Cadastros** | Cursos, Matérias, Turmas, Períodos, Alunos e Professores. Cada lista tem busca, filtros e ordenação, formulário em painel lateral (clique na linha ou em Editar), edição e exclusão com confirmação. |
+| **Extras** | Busca global com `Ctrl + K`, animações suaves, fundo desfocado ao abrir janelas, notificações de sucesso e erro, estados vazios ilustrados e layout responsivo. |
 
 O sistema **não** inclui Frequência nem Avaliação nesta versão.
+
+**Dados de demonstração:** 5 professores, 3 cursos, 20 matérias, 3 períodos, 12 turmas e 77 alunos, com horários e planos de aula completos (18 semanas).
 
 ## Requisito → Como testar
 
@@ -52,11 +54,11 @@ O sistema **não** inclui Frequência nem Avaliação nesta versão.
 | **RNF02** — Linguagem clara | Botões com verbos ("Salvar curso", "Excluir", "Restaurar dados") e mensagens que explicam o que fazer ("Selecione o curso da matéria."). |
 | **RNF03** — Acessibilidade | Navegue só com o teclado (`Tab`, `Shift + Tab`, `Enter`, `Esc`, setas na busca). Veja a seção [Acessibilidade](#acessibilidade). |
 
-Exemplo de regra de negócio: tente excluir o curso **ADS**. O sistema bloqueia e mostra "**Este curso possui 4 matérias vinculadas**", com um link para ver essas matérias.
+Exemplo de regra de negócio: tente excluir o curso **ADS**. O sistema bloqueia e mostra "**Este curso possui 7 matérias vinculadas**", com um link para ver essas matérias.
 
 ## Acessibilidade
 
-- Contraste AA nos temas claro e escuro. Verificado com axe-core (o motor do Lighthouse) em todas as telas, sem violações WCAG 2 A/AA; o Lighthouse marcou 100 em Acessibilidade na tela de entrada.
+- Contraste AA. Verificado com axe-core (o motor do Lighthouse) em todas as telas, sem violações WCAG 2 A/AA; o Lighthouse marcou 100 em Acessibilidade e 100 em Boas práticas na tela de entrada.
 - Todo campo tem `label`; erros usam `aria-invalid`, `aria-describedby` e um resumo com `role="alert"`.
 - Navegação completa por teclado, link "Pular para o conteúdo" e foco sempre visível.
 - Modais e painéis com `role="dialog"`/`alertdialog`, `aria-modal`, foco preso dentro, `Esc` para fechar e retorno do foco. O restante da página fica `inert`.
@@ -66,14 +68,14 @@ Exemplo de regra de negócio: tente excluir o curso **ADS**. O sistema bloqueia 
 
 ## Suposições de modelagem
 
-1. **Alocação** é a entidade que liga **professor × matéria × turma**. Ela guarda os horários semanais (dia, início, fim), a sala e o **plano de aula**.
-2. A matéria e a turma de uma alocação precisam ser **do mesmo curso**. A mesma matéria não pode ser alocada duas vezes para a mesma turma.
+1. Internamente, uma **alocação** liga **professor × matéria × turma** e guarda os horários semanais (dia, início, fim), a sala e o **plano de aula**. Nesta versão ela **não tem tela de cadastro**: as alocações vêm definidas nos dados de demonstração, como se fossem atribuídas pela coordenação. Por isso, um professor recém-cadastrado vê o painel, o plano e a agenda vazios.
+2. A matéria e a turma de uma alocação são **do mesmo curso**, e não há choque de horário de professor, turma ou sala nos dados de demonstração.
 3. Cada aluno pertence a **uma turma**. **Alunos por matéria** é a soma dos alunos das turmas em que o professor leciona aquela matéria.
 4. O plano de aula é uma lista de **etapas**, e cada etapa cobre uma ou mais semanas consecutivas do período. A semana 1 é a semana (segunda a sábado) que contém a data de início do período.
 5. **Aulas previstas na semana** = horários das alocações do professor que caem dentro do período letivo da turma. Fora do período, a semana mostra zero aulas.
 6. O **período ativo** é o que contém a data de hoje. Se nenhum contém, é o último que já começou.
 7. Os **cadastros são compartilhados** por todos os professores (são da instituição). Painel, Plano de Aula e Agenda mostram apenas os dados do professor conectado.
-8. A exclusão é **bloqueada** quando há vínculos: curso com matérias ou turmas, matéria com alocações, turma com alunos ou alocações, período com turmas, professor com alocações e o próprio professor conectado.
+8. A exclusão é **bloqueada** quando há vínculos: curso com matérias ou turmas, matéria em uso por alguma turma, turma com alunos ou matérias em andamento, período com turmas, professor com aulas e o próprio professor conectado.
 9. O código do curso é único (2 a 6 letras ou números), assim como o e-mail do professor e a matrícula do aluno (6 a 12 números).
 10. O login é **simulado**: não há senha nem segurança real. Os dados ficam no `localStorage`. Se ele estiver bloqueado, o protótipo funciona em memória durante a sessão.
 
@@ -83,14 +85,15 @@ Todos os nomes, e-mails e matrículas são **fictícios**.
 
 ```
 index.html            Página única (rotas por hash: #/painel, #/cursos …)
-assets/               Logo (SVG), favicon e fontes WOFF2 (Inter, Plus Jakarta Sans)
+assets/               Logo original (WebP), favicons e fontes WOFF2 (Inter, Plus Jakarta Sans)
 css/
-  tokens.css          Cores, tipografia, temas claro/escuro
+  tokens.css          Cores e tipografia
   base.css            Reset, tipografia, foco, reduced motion
   layout.css          Barra lateral, topo, barra inferior (celular)
   components.css      Botões, cards, formulários, tabelas, diálogos, toasts, busca
   pages.css           Entrar e Painel
   planning.css        Plano de Aula e Agenda
+  motion.css          Animações, fundo desfocado e microinterações
   print.css           Impressão / PDF
 js/
   core/               util, store (localStorage), domain (regras), router
@@ -108,12 +111,12 @@ Tecnologias: HTML, CSS e JavaScript puro, **sem frameworks, sem npm, sem build e
 |---|---|---|
 | **0:00 – 0:20** | Tela **Entrar** | "Professores têm dificuldade para organizar cursos, matérias, turmas e períodos. O Teacher Class centraliza tudo isso." Clique em **Ana Paula Ribeiro**. |
 | **0:20 – 0:45** | **Painel** | Mostre a próxima aula, os indicadores, as aulas de hoje e o gráfico **Alunos por matéria** ("cada curso tem cor, padrão e código, pensando em daltonismo"). |
-| **0:45 – 1:20** | **HU01 – Plano de Aula** | Troque Curso → Matéria. Mostre a ementa, a carga horária, as aulas por semana, os alunos e a linha do tempo (Concluída / Em andamento / Prevista). Clique em **Imprimir ou salvar PDF**. |
-| **1:20 – 1:40** | **HU02 – Agenda Semanal** | "7 aulas previstas esta semana, 13 h 20 min." Avance uma semana com a seta e alterne Grade / Lista. |
+| **0:45 – 1:20** | **HU01 – Plano de Aula** | Troque o curso (ADS → CDD) e escolha a matéria nos cartões. Mostre a ementa, a carga horária, as aulas por semana, os alunos e a linha do tempo (Concluída / Em andamento / Prevista). Clique em **Imprimir ou salvar PDF**. |
+| **1:20 – 1:40** | **HU02 – Agenda Semanal** | "10 aulas previstas esta semana, 18 h 20 min." Avance uma semana com a seta e alterne Grade / Lista. |
 | **1:40 – 2:05** | **RF02 + CA01** | **Cursos → Novo curso**: "Sistemas para Internet", "TSI", 5 → Salvar. Mostre a notificação e o destaque na lista. |
 | **2:05 – 2:30** | **RF03 + CA02** | **Matérias → Nova matéria**: clique em Salvar sem preencher. Mostre os erros, o resumo e o foco. Preencha (curso **TSI**) e salve: o vínculo aparece na lista. |
-| **2:30 – 2:45** | **RF04 + regra** | **Turmas → Nova turma** (TSI, 2026/2, Noturno). Em Cursos, tente excluir **ADS**: "Este curso possui 4 matérias vinculadas". |
-| **2:45 – 3:00** | **RF01 + extras** | `Ctrl + K` → "Novo professor"; alterne o **tema escuro**; mostre no celular (DevTools, 375 px). "Feito com acessibilidade AA e sem frameworks." |
+| **2:30 – 2:45** | **RF04 + regra** | **Turmas → Nova turma** (TSI, 2026/2, Noturno). Em Cursos, tente excluir **ADS**: "Este curso possui 7 matérias vinculadas". |
+| **2:45 – 3:00** | **RF01 + extras** | `Ctrl + K` → "Novo professor"; mostre no celular (DevTools, 375 px) e clique em **Sair**. "Feito com acessibilidade AA e sem frameworks." |
 
 > Dica: antes de apresentar, clique em **Restaurar dados de demonstração**.
 
@@ -138,4 +141,4 @@ Tecnologias: HTML, CSS e JavaScript puro, **sem frameworks, sem npm, sem build e
 ## Créditos
 
 - Fontes **Inter** e **Plus Jakarta Sans**, sob a SIL Open Font License, hospedadas localmente.
-- Logo recriado em SVG a partir da identidade visual da equipe. Ícones desenhados em SVG para o projeto.
+- Logo original da equipe, recortado da arte enviada e com fundo removido. Ícones desenhados em SVG para o projeto.

@@ -4,12 +4,14 @@ window.TC = window.TC || {};
 (function (TC) {
   'use strict';
 
-  var DATA_VERSION = 1;
+  var DATA_VERSION = 2;
 
   var professores = [
     { id: 'prof-ana', nome: 'Ana Paula Ribeiro', email: 'ana.ribeiro@teacherclass.demo', area: 'Engenharia de Software', titulacao: 'Mestrado' },
     { id: 'prof-carlos', nome: 'Carlos Eduardo Nogueira', email: 'carlos.nogueira@teacherclass.demo', area: 'Infraestrutura e Redes', titulacao: 'Especialização' },
-    { id: 'prof-juliana', nome: 'Juliana Ferraz Prado', email: 'juliana.prado@teacherclass.demo', area: 'Ciência de Dados e Estatística', titulacao: 'Doutorado' }
+    { id: 'prof-juliana', nome: 'Juliana Ferraz Prado', email: 'juliana.prado@teacherclass.demo', area: 'Ciência de Dados e Estatística', titulacao: 'Doutorado' },
+    { id: 'prof-marcos', nome: 'Marcos Antônio Ferreira', email: 'marcos.ferreira@teacherclass.demo', area: 'Desenvolvimento Mobile e Programação', titulacao: 'Especialização' },
+    { id: 'prof-patricia', nome: 'Patrícia Moura Lins', email: 'patricia.lins@teacherclass.demo', area: 'Matemática Aplicada', titulacao: 'Doutorado' }
   ];
 
   var cursos = [
@@ -28,7 +30,17 @@ window.TC = window.TC || {};
     { id: 'mat-seg', nome: 'Segurança da Informação', cursoId: 'cur-rdc', cargaHoraria: 60, ementa: 'Princípios de segurança, ameaças, criptografia, segurança em redes, gestão de riscos e LGPD.' },
     { id: 'mat-est', nome: 'Estatística Aplicada', cursoId: 'cur-cdd', cargaHoraria: 80, ementa: 'Estatística descritiva, visualização, probabilidade, inferência e regressão aplicadas a dados reais.' },
     { id: 'mat-py', nome: 'Python para Dados', cursoId: 'cur-cdd', cargaHoraria: 80, ementa: 'Linguagem Python, NumPy e pandas para limpeza, transformação e visualização de dados.' },
-    { id: 'mat-ml', nome: 'Aprendizado de Máquina', cursoId: 'cur-cdd', cargaHoraria: 60, ementa: 'Preparação de dados, regressão, classificação, agrupamento e ética no uso de modelos.' }
+    { id: 'mat-ml', nome: 'Aprendizado de Máquina', cursoId: 'cur-cdd', cargaHoraria: 60, ementa: 'Preparação de dados, regressão, classificação, agrupamento e ética no uso de modelos.' },
+    { id: 'mat-poo', nome: 'Programação Orientada a Objetos', cursoId: 'cur-ads', cargaHoraria: 80, ementa: 'Classes, objetos, encapsulamento, herança, polimorfismo, coleções e tratamento de exceções.' },
+    { id: 'mat-ux', nome: 'Interface e Experiência do Usuário', cursoId: 'cur-ads', cargaHoraria: 60, ementa: 'Pesquisa com usuários, arquitetura de informação, prototipação, usabilidade e acessibilidade digital.' },
+    { id: 'mat-mob', nome: 'Desenvolvimento Mobile', cursoId: 'cur-ads', cargaHoraria: 60, ementa: 'Aplicativos multiplataforma, componentes de interface, navegação, dados locais, APIs e publicação.' },
+    { id: 'mat-cab', nome: 'Cabeamento Estruturado', cursoId: 'cur-rdc', cargaHoraria: 40, ementa: 'Normas, meios físicos, projeto de cabeamento, certificação e documentação de redes.' },
+    { id: 'mat-cloud', nome: 'Computação em Nuvem', cursoId: 'cur-rdc', cargaHoraria: 60, ementa: 'Modelos de serviço, virtualização e contêineres, redes virtuais, armazenamento, custos e segurança.' },
+    { id: 'mat-lnx', nome: 'Administração de Servidores Linux', cursoId: 'cur-rdc', cargaHoraria: 80, ementa: 'Instalação, usuários e permissões, serviços de rede, automação com scripts e monitoramento.' },
+    { id: 'mat-sql', nome: 'SQL para Análise de Dados', cursoId: 'cur-cdd', cargaHoraria: 60, ementa: 'Consultas analíticas, junções, agregações, funções de janela, modelagem analítica e indicadores.' },
+    { id: 'mat-vis', nome: 'Visualização de Dados', cursoId: 'cur-cdd', cargaHoraria: 40, ementa: 'Percepção visual, escolha de gráficos, cores acessíveis, painéis e narrativa com dados.' },
+    { id: 'mat-big', nome: 'Big Data', cursoId: 'cur-cdd', cargaHoraria: 60, ementa: 'Armazenamento distribuído, processamento com Spark, pipelines e processamento em tempo real.' },
+    { id: 'mat-mat', nome: 'Fundamentos de Matemática', cursoId: 'cur-cdd', cargaHoraria: 60, ementa: 'Funções, vetores e matrizes, sistemas lineares, noções de cálculo e lógica matemática.' }
   ];
 
   var periodos = [
@@ -43,7 +55,13 @@ window.TC = window.TC || {};
     { id: 'tur-rdc1a', nome: 'RDC 1º A', cursoId: 'cur-rdc', periodoId: 'per-2026-2', turno: 'Noturno' },
     { id: 'tur-rdc2a', nome: 'RDC 2º A', cursoId: 'cur-rdc', periodoId: 'per-2026-2', turno: 'Vespertino' },
     { id: 'tur-cdd1a', nome: 'CDD 1º A', cursoId: 'cur-cdd', periodoId: 'per-2026-2', turno: 'Noturno' },
-    { id: 'tur-cdd2a', nome: 'CDD 2º A', cursoId: 'cur-cdd', periodoId: 'per-2026-2', turno: 'Matutino' }
+    { id: 'tur-cdd2a', nome: 'CDD 2º A', cursoId: 'cur-cdd', periodoId: 'per-2026-2', turno: 'Matutino' },
+    { id: 'tur-ads2a', nome: 'ADS 2º A', cursoId: 'cur-ads', periodoId: 'per-2026-2', turno: 'Noturno' },
+    { id: 'tur-ads5a', nome: 'ADS 5º A', cursoId: 'cur-ads', periodoId: 'per-2026-2', turno: 'Noturno' },
+    { id: 'tur-ads4a', nome: 'ADS 4º A', cursoId: 'cur-ads', periodoId: 'per-2026-1', turno: 'Noturno' },
+    { id: 'tur-rdc1b', nome: 'RDC 1º B', cursoId: 'cur-rdc', periodoId: 'per-2026-2', turno: 'Matutino' },
+    { id: 'tur-rdc3a', nome: 'RDC 3º A', cursoId: 'cur-rdc', periodoId: 'per-2026-2', turno: 'Noturno' },
+    { id: 'tur-cdd3a', nome: 'CDD 3º A', cursoId: 'cur-cdd', periodoId: 'per-2026-2', turno: 'Noturno' }
   ];
 
   var alunosPorTurma = {
@@ -58,7 +76,18 @@ window.TC = window.TC || {};
     'tur-cdd1a': ['Lívia Siqueira', 'Otávio Rezende', 'Manuela Prates', 'Diego Fonseca',
       'Clara Bezerra Lins', 'Arthur Queiroz', 'Helena Vasconcelos'],
     'tur-cdd2a': ['Ricardo Paiva Neto', 'Bianca Sampaio', 'Murilo Guimarães', 'Valentina Rangel',
-      'Enzo Magalhães', 'Paula Cristina Dantas']
+      'Enzo Magalhães', 'Paula Cristina Dantas'],
+    'tur-ads2a': ['Marina Couto Ribas', 'Thales Bernardes', 'Lorena Castilho', 'Kauã Pereira Nunes',
+      'Sabrina Toledo', 'Heitor Galvão', 'Melissa Arruda', 'Nicolas Ferraz Dutra'],
+    'tur-ads5a': ['Rebeca Vilela', 'Guilherme Prado Neves', 'Alícia Moraes', 'Benjamin Teles',
+      'Stella Barreto', 'Cauã Medeiros'],
+    'tur-ads4a': ['Emanuelly Brandão', 'Raul Fagundes', 'Agatha Seixas', 'Joaquim Leal', 'Cecília Aguiar'],
+    'tur-rdc1b': ['Bernardo Quintela', 'Lara Esteves', 'Miguel Torres', 'Vitória Assis',
+      'Pietro Carneiro', 'Elisa Marinho'],
+    'tur-rdc3a': ['Otto Ramalho', 'Isadora Fontes', 'Wesley Godoy', 'Ingrid Matos',
+      'Daniel Furtado', 'Bárbara Lemos'],
+    'tur-cdd3a': ['Noah Albuquerque', 'Larissa Pinheiro', 'Breno Mendonça', 'Olívia Sales',
+      'Hugo Cordeiro', 'Natan Bittencourt']
   };
 
   /* Lesson plan templates per subject: [tema, objetivos, conteúdo, recursos].
@@ -143,6 +172,86 @@ window.TC = window.TC || {};
       ['Classificação', 'Treinar e avaliar classificadores.', 'KNN, árvores de decisão e matriz de confusão.', 'scikit-learn'],
       ['Agrupamento', 'Encontrar padrões em dados sem rótulo.', 'k-means e avaliação de grupos.', 'Google Colab'],
       ['Ética e projeto final', 'Avaliar vieses e entregar um modelo.', 'Vieses, explicabilidade e apresentação.', 'Projeto em grupo']
+    ],
+    'mat-poo': [
+      ['Paradigma orientado a objetos', 'Entender classes e objetos como modelo do mundo real.', 'Classes, objetos, atributos e métodos.', 'Slides; IntelliJ IDEA'],
+      ['Encapsulamento', 'Proteger o estado interno dos objetos.', 'Modificadores de acesso, getters, setters e construtores.', 'Exercícios guiados'],
+      ['Herança', 'Reutilizar código com hierarquias de classes.', 'Herança, sobrescrita e classes abstratas.', 'Laboratório'],
+      ['Polimorfismo e interfaces', 'Projetar código flexível e extensível.', 'Interfaces, polimorfismo e injeção de dependência.', 'Estudo de caso'],
+      ['Coleções e exceções', 'Manipular coleções e tratar erros.', 'List, Map, Set e tratamento de exceções.', 'Lista de exercícios'],
+      ['Projeto orientado a objetos', 'Modelar e implementar um sistema completo.', 'Diagrama de classes, implementação e testes.', 'Projeto em grupo; apresentação']
+    ],
+    'mat-ux': [
+      ['Fundamentos de UX', 'Diferenciar UX, UI e usabilidade.', 'Design centrado no usuário e heurísticas de Nielsen.', 'Slides; artigos'],
+      ['Pesquisa com usuários', 'Planejar e conduzir entrevistas.', 'Personas, entrevistas e mapa de empatia.', 'Roteiro de entrevista'],
+      ['Arquitetura de informação', 'Organizar conteúdo e navegação.', 'Card sorting, fluxos e mapa do site.', 'Miro'],
+      ['Prototipação', 'Criar protótipos de baixa e alta fidelidade.', 'Wireframes, protótipos navegáveis e design system.', 'Figma'],
+      ['Acessibilidade digital', 'Projetar interfaces para todas as pessoas.', 'WCAG, contraste, leitores de tela e daltonismo.', 'Checklist WCAG'],
+      ['Testes de usabilidade', 'Validar o protótipo com usuários reais.', 'Planejamento, aplicação e análise de testes.', 'Protótipo da equipe']
+    ],
+    'mat-mob': [
+      ['Ecossistema mobile', 'Comparar abordagens nativas e multiplataforma.', 'Android, iOS, Flutter e React Native.', 'Slides'],
+      ['Componentes de interface', 'Construir telas com componentes reutilizáveis.', 'Layouts, listas e formulários.', 'Emulador; laboratório'],
+      ['Navegação', 'Implementar a navegação entre telas.', 'Pilhas, abas e passagem de parâmetros.', 'Exercícios práticos'],
+      ['Dados locais', 'Persistir dados no dispositivo.', 'Armazenamento local e SQLite.', 'Mini-projeto'],
+      ['Consumo de APIs', 'Integrar o aplicativo a serviços web.', 'HTTP, JSON e tratamento de erros.', 'API pública'],
+      ['Publicação do aplicativo', 'Preparar e publicar um aplicativo.', 'Ícones, testes em dispositivos e lojas de aplicativos.', 'Projeto final']
+    ],
+    'mat-cab': [
+      ['Normas de cabeamento', 'Conhecer as normas de cabeamento estruturado.', 'ANSI/TIA-568 e NBR 14565.', 'Slides'],
+      ['Meios físicos', 'Comparar par trançado e fibra óptica.', 'Categorias de cabos e conectores.', 'Kit de cabos'],
+      ['Crimpagem e testes', 'Montar e testar cabos de rede.', 'Padrões T568A e T568B, crimpagem e testador.', 'Laboratório de redes'],
+      ['Projeto de cabeamento', 'Projetar o cabeamento de um prédio.', 'Sala de equipamentos, backbone e área de trabalho.', 'Planta baixa'],
+      ['Certificação', 'Certificar uma instalação.', 'Testes de certificação e relatórios.', 'Certificador de cabos'],
+      ['Documentação', 'Documentar a rede instalada.', 'Identificação, etiquetagem e diagramas.', 'Projeto em grupo']
+    ],
+    'mat-cloud': [
+      ['Conceitos de nuvem', 'Entender os modelos de serviço e de implantação.', 'IaaS, PaaS, SaaS; nuvem pública, privada e híbrida.', 'Slides'],
+      ['Virtualização e contêineres', 'Relacionar virtualização e nuvem.', 'Máquinas virtuais, Docker e orquestração.', 'Laboratório'],
+      ['Redes na nuvem', 'Configurar redes virtuais.', 'Redes virtuais, sub-redes, grupos de segurança e balanceadores.', 'Conta de estudante'],
+      ['Armazenamento e bancos gerenciados', 'Escolher o serviço de dados adequado.', 'Objetos, blocos e bancos gerenciados.', 'Estudo de caso'],
+      ['Custos e segurança', 'Controlar custos e acessos.', 'Calculadora de preços, gestão de identidades e boas práticas.', 'Planilha de custos'],
+      ['Projeto em nuvem', 'Implantar uma aplicação na nuvem.', 'Arquitetura, implantação e monitoramento.', 'Projeto em grupo']
+    ],
+    'mat-lnx': [
+      ['Instalação e primeiros passos', 'Instalar e navegar em um servidor Linux.', 'Distribuições, instalação e sistema de arquivos.', 'VirtualBox'],
+      ['Usuários e permissões', 'Gerenciar contas e acessos.', 'Usuários, grupos, chmod e sudo.', 'Laboratório Linux'],
+      ['Pacotes e serviços', 'Instalar e gerenciar serviços.', 'apt, systemd e logs.', 'Laboratório Linux'],
+      ['Serviços de rede', 'Configurar servidores de rede.', 'SSH, servidor web e compartilhamento de arquivos.', 'Laboratório de redes'],
+      ['Automação com scripts', 'Automatizar tarefas administrativas.', 'Shell script, cron e backups.', 'Exercícios práticos'],
+      ['Monitoramento', 'Acompanhar a saúde do servidor.', 'Métricas, alertas e resolução de problemas.', 'Estudo de caso']
+    ],
+    'mat-sql': [
+      ['Revisão de SQL', 'Retomar as consultas básicas.', 'SELECT, WHERE, ORDER BY e tipos de dados.', 'Banco de exemplo'],
+      ['Junções', 'Combinar dados de várias tabelas.', 'INNER, LEFT e FULL JOIN.', 'Laboratório'],
+      ['Agregações', 'Resumir dados por grupos.', 'GROUP BY, HAVING e funções de agregação.', 'Lista de exercícios'],
+      ['Funções de janela', 'Calcular rankings e acumulados.', 'ROW_NUMBER, RANK e médias móveis.', 'Estudo de caso'],
+      ['Modelagem analítica', 'Organizar dados para análise.', 'Fatos, dimensões e modelo estrela.', 'Diagrama'],
+      ['Indicadores', 'Construir indicadores de negócio.', 'KPIs, views e relatórios.', 'Projeto com dados abertos']
+    ],
+    'mat-vis': [
+      ['Percepção visual', 'Entender como lemos gráficos.', 'Atributos pré-atentivos e princípios da Gestalt.', 'Slides'],
+      ['Escolha do gráfico', 'Escolher o gráfico certo para cada pergunta.', 'Comparação, distribuição, composição e relação.', 'Catálogo de gráficos'],
+      ['Cores e acessibilidade', 'Usar cores sem excluir ninguém.', 'Paletas, contraste e daltonismo.', 'Simulador de daltonismo'],
+      ['Painéis', 'Montar painéis claros.', 'Layout, hierarquia e interatividade.', 'Ferramenta de BI'],
+      ['Narrativa com dados', 'Contar uma história com dados.', 'Contexto, foco e chamada para ação.', 'Estudo de caso'],
+      ['Projeto de visualização', 'Apresentar uma análise visual.', 'Do dado bruto ao painel final.', 'Projeto individual']
+    ],
+    'mat-big': [
+      ['Introdução ao Big Data', 'Entender os desafios de grandes volumes de dados.', 'Os 5 Vs e arquiteturas de dados.', 'Slides'],
+      ['Armazenamento distribuído', 'Conhecer data lakes e formatos de arquivo.', 'HDFS, Parquet e armazenamento de objetos.', 'Laboratório'],
+      ['Processamento com Spark', 'Processar dados em paralelo.', 'DataFrames, transformações e ações.', 'Google Colab'],
+      ['Pipelines de dados', 'Construir fluxos de ingestão.', 'ETL, ELT e orquestração.', 'Estudo de caso'],
+      ['Processamento em tempo real', 'Tratar dados contínuos.', 'Filas de mensagens e janelas de tempo.', 'Simulação'],
+      ['Projeto de Big Data', 'Entregar um pipeline completo.', 'Ingestão, processamento e visualização.', 'Projeto em grupo']
+    ],
+    'mat-mat': [
+      ['Conjuntos e funções', 'Revisar a linguagem matemática básica.', 'Conjuntos, relações e funções.', 'Lista de exercícios'],
+      ['Funções aplicadas', 'Modelar situações com funções.', 'Funções afim, quadrática e exponencial.', 'Planilha eletrônica'],
+      ['Vetores e matrizes', 'Operar com vetores e matrizes.', 'Operações, produto escalar e transposta.', 'Google Colab'],
+      ['Sistemas lineares', 'Resolver sistemas de equações.', 'Escalonamento e aplicações.', 'Exercícios guiados'],
+      ['Noções de cálculo', 'Entender taxas de variação.', 'Limites, derivadas e otimização simples.', 'Slides'],
+      ['Lógica matemática', 'Raciocinar de forma estruturada.', 'Proposições, conectivos e tabelas-verdade.', 'Lista de exercícios']
     ]
   };
 
@@ -158,7 +267,17 @@ window.TC = window.TC || {};
     { id: 'alo-8', professorId: 'prof-juliana', materiaId: 'mat-est', turmaId: 'tur-cdd1a', sala: 'Sala 301', horarios: [{ dia: 1, inicio: '19:00', fim: '20:40' }, { dia: 3, inicio: '20:50', fim: '22:30' }] },
     { id: 'alo-9', professorId: 'prof-juliana', materiaId: 'mat-py', turmaId: 'tur-cdd1a', sala: 'Laboratório 4', horarios: [{ dia: 4, inicio: '19:00', fim: '20:40' }] },
     { id: 'alo-10', professorId: 'prof-juliana', materiaId: 'mat-ml', turmaId: 'tur-cdd2a', sala: 'Laboratório 4', horarios: [{ dia: 2, inicio: '10:00', fim: '11:40' }, { dia: 5, inicio: '08:00', fim: '09:40' }] },
-    { id: 'alo-11', professorId: 'prof-juliana', materiaId: 'mat-py', turmaId: 'tur-cdd2a', sala: 'Laboratório 4', horarios: [{ dia: 3, inicio: '08:00', fim: '09:40' }] }
+    { id: 'alo-11', professorId: 'prof-juliana', materiaId: 'mat-py', turmaId: 'tur-cdd2a', sala: 'Laboratório 4', horarios: [{ dia: 3, inicio: '08:00', fim: '09:40' }] },
+    { id: 'alo-12', professorId: 'prof-marcos', materiaId: 'mat-poo', turmaId: 'tur-ads2a', sala: 'Laboratório 5', horarios: [{ dia: 1, inicio: '19:00', fim: '20:40' }, { dia: 3, inicio: '19:00', fim: '20:40' }] },
+    { id: 'alo-13', professorId: 'prof-marcos', materiaId: 'mat-mob', turmaId: 'tur-ads5a', sala: 'Laboratório 3', horarios: [{ dia: 4, inicio: '19:00', fim: '22:30' }] },
+    { id: 'alo-14', professorId: 'prof-ana', materiaId: 'mat-ux', turmaId: 'tur-ads5a', sala: 'Sala 210', horarios: [{ dia: 3, inicio: '20:50', fim: '22:30' }, { dia: 5, inicio: '19:00', fim: '20:40' }] },
+    { id: 'alo-15', professorId: 'prof-carlos', materiaId: 'mat-cab', turmaId: 'tur-rdc1b', sala: 'Laboratório de Redes', horarios: [{ dia: 1, inicio: '08:00', fim: '09:40' }, { dia: 3, inicio: '08:00', fim: '09:40' }] },
+    { id: 'alo-16', professorId: 'prof-carlos', materiaId: 'mat-cloud', turmaId: 'tur-rdc3a', sala: 'Laboratório 6', horarios: [{ dia: 2, inicio: '19:00', fim: '20:40' }, { dia: 4, inicio: '20:50', fim: '22:30' }] },
+    { id: 'alo-17', professorId: 'prof-carlos', materiaId: 'mat-lnx', turmaId: 'tur-rdc3a', sala: 'Laboratório Linux', horarios: [{ dia: 3, inicio: '19:00', fim: '20:40' }, { dia: 5, inicio: '19:00', fim: '20:40' }] },
+    { id: 'alo-18', professorId: 'prof-ana', materiaId: 'mat-sql', turmaId: 'tur-cdd3a', sala: 'Sala 302', horarios: [{ dia: 2, inicio: '20:50', fim: '22:30' }] },
+    { id: 'alo-19', professorId: 'prof-juliana', materiaId: 'mat-big', turmaId: 'tur-cdd3a', sala: 'Laboratório 4', horarios: [{ dia: 4, inicio: '20:50', fim: '22:30' }] },
+    { id: 'alo-20', professorId: 'prof-patricia', materiaId: 'mat-mat', turmaId: 'tur-cdd1a', sala: 'Sala 301', horarios: [{ dia: 2, inicio: '19:00', fim: '20:40' }, { dia: 5, inicio: '19:00', fim: '20:40' }] },
+    { id: 'alo-21', professorId: 'prof-patricia', materiaId: 'mat-vis', turmaId: 'tur-cdd3a', sala: 'Sala 302', horarios: [{ dia: 1, inicio: '19:00', fim: '20:40' }, { dia: 3, inicio: '20:50', fim: '22:30' }] }
   ];
 
   function buildPlano(materiaId, alocId) {

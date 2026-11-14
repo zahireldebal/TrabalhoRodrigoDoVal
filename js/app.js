@@ -1,4 +1,4 @@
-/* App bootstrap: shell (sidebar, topbar, bottom nav), theme, session and routing. */
+/* App bootstrap: shell (sidebar, topbar, bottom nav), session and routing. */
 window.TC = window.TC || {};
 
 (function (TC) {
@@ -10,11 +10,11 @@ window.TC = window.TC || {};
   var D, S;
 
   var MAIN_NAV = [
-    { path: '/painel', label: 'Painel', icon: 'dashboard', title: 'Painel' },
-    { path: '/plano', label: 'Plano de Aula', icon: 'bookOpen', title: 'Plano de Aula' },
-    { path: '/agenda', label: 'Agenda Semanal', icon: 'calendar', title: 'Agenda Semanal' }
+    { path: '/painel', label: 'Painel', icon: 'dashboard' },
+    { path: '/plano', label: 'Plano de Aula', icon: 'bookOpen' },
+    { path: '/agenda', label: 'Agenda Semanal', icon: 'calendar' }
   ];
-  var CADASTROS = ['cursos', 'materias', 'turmas', 'periodos', 'alunos', 'professores', 'alocacoes'];
+  var CADASTROS = ['cursos', 'materias', 'turmas', 'periodos', 'alunos', 'professores'];
 
   var firstRender = true;
   var shellProfId = null;
@@ -22,22 +22,6 @@ window.TC = window.TC || {};
   function currentProf() {
     var id = S.session.get();
     return id ? D.professor(id) : null;
-  }
-
-  /* ---------- Theme ---------- */
-  function applyTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    var meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', theme === 'dark' ? '#0B1229' : '#1B2A55');
-    Array.prototype.forEach.call(document.querySelectorAll('[data-theme-toggle]'), function (b) {
-      b.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
-    });
-  }
-  function toggleTheme() {
-    var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    applyTheme(next);
-    S.pref.set('theme', next);
-    TC.toast.info(next === 'dark' ? 'Tema escuro ativado' : 'Tema claro ativado');
   }
 
   /* ---------- Actions shared by sidebar, sheet and palette ---------- */
@@ -49,7 +33,7 @@ window.TC = window.TC || {};
     }).then(function (ok) {
       if (!ok) return;
       S.reset();
-      if (!currentProf()) { S.session.clear(); }
+      if (!currentProf()) S.session.clear();
       shellProfId = null;
       TC.toast.success('Dados restaurados', 'Os dados de demonstração foram recarregados.');
       render(TC.router.parse());
@@ -57,8 +41,10 @@ window.TC = window.TC || {};
   }
 
   function logout() {
+    var p = currentProf();
     S.session.clear();
     shellProfId = null;
+    if (p) TC.toast.info('Você saiu', 'Até logo, ' + U.firstName(p.nome) + '!');
     TC.router.go('#/login');
   }
 
@@ -71,14 +57,12 @@ window.TC = window.TC || {};
     var btn = function (act, icon, label) {
       return '<li><button type="button" class="sheet-link" data-act="' + act + '"><span class="sl-icon">' + I(icon) + '</span>' + esc(label) + '</button></li>';
     };
-    var body = '<p class="sheet-title">Cadastros</p><ul class="sheet-list">' +
+    var body = '<p class="sheet-title">Cadastros</p><ul class="sheet-list sheet-grid">' +
       CADASTROS.map(function (k) { var c = TC.entities[k]; return link('/' + k, c.icon, c.title); }).join('') + '</ul>' +
       '<div class="sheet-sep" role="separator"></div><ul class="sheet-list">' +
-      btn('search', 'search', 'Buscar (Ctrl + K)') +
-      btn('theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'sun' : 'moon',
-        document.documentElement.getAttribute('data-theme') === 'dark' ? 'Usar tema claro' : 'Usar tema escuro') +
+      btn('search', 'search', 'Buscar') +
       btn('restore', 'refresh', 'Restaurar dados de demonstração') +
-      btn('logout', 'logout', 'Trocar de professor') + '</ul>';
+      btn('logout', 'logout', 'Sair') + '</ul>';
     var sheet = TC.ui.open({ variant: 'sheet', title: 'Mais opções', body: body });
     sheet.el.addEventListener('click', function (e) {
       var b = e.target.closest('[data-act]');
@@ -86,7 +70,6 @@ window.TC = window.TC || {};
       var act = b.getAttribute('data-act');
       sheet.close();
       setTimeout(function () {
-        if (act === 'theme') toggleTheme();
         if (act === 'restore') restoreDemo();
         if (act === 'logout') logout();
         if (act === 'search') TC.palette.open();
@@ -128,7 +111,7 @@ window.TC = window.TC || {};
       }).join('') + '</ul></nav>' +
       '<div class="sidebar-foot">' + periodCard() +
       '<button type="button" class="sidebar-btn" data-act="restore" title="Restaurar dados de demonstração">' + I('refresh') + '<span class="nav-label">Restaurar dados de demonstração</span></button>' +
-      '<button type="button" class="sidebar-btn" data-act="logout" title="Trocar de professor">' + I('logout') + '<span class="nav-label">Trocar de professor</span></button>' +
+      '<button type="button" class="sidebar-btn sidebar-logout" data-act="logout" title="Sair">' + I('logout') + '<span class="nav-label">Sair</span></button>' +
       '</div></aside>' +
       '<div class="main-col">' +
       '<header class="topbar">' +
@@ -137,8 +120,6 @@ window.TC = window.TC || {};
       '<span class="search-label">Buscar cursos, matérias, alunos…</span><span class="kbd" aria-hidden="true">Ctrl K</span></button>' +
       '<span class="topbar-spacer"></span>' +
       (p ? '<span class="period-chip">' + I('calendarRange') + 'Período <strong>' + esc(p.nome) + '</strong></span>' : '') +
-      '<button type="button" class="icon-btn bordered theme-toggle" data-theme-toggle aria-label="Tema escuro" aria-pressed="false">' +
-      I('sun', { cls: 'icon-sun' }) + I('moon', { cls: 'icon-moon' }) + '</button>' +
       '<div class="user-chip">' + TC.ui.avatar(prof.nome, 'sm') + '<span class="user-meta"><span class="user-name">' + esc(prof.nome) + '</span>' +
       '<span class="user-role">' + esc(prof.area) + '</span></span></div>' +
       '</header>' +
@@ -147,24 +128,21 @@ window.TC = window.TC || {};
       '<nav class="bottom-nav" aria-label="Navegação inferior"><ul>' +
       bnLink('/painel', 'dashboard', 'Painel') + bnLink('/plano', 'bookOpen', 'Plano') + bnLink('/agenda', 'calendar', 'Agenda') +
       bnLink('/cursos', 'layers', 'Cadastros') +
-      '<li><button type="button" class="bn-link" data-act="more" aria-haspopup="dialog">' + '<span class="bn-icon">' + I('more') + '</span>Mais</button></li>' +
+      '<li><button type="button" class="bn-link" data-act="more" aria-haspopup="dialog"><span class="bn-icon">' + I('more') + '</span>Mais</button></li>' +
       '</ul></nav>' +
       '</div>';
 
-    applyTheme(document.documentElement.getAttribute('data-theme') || 'light');
     shellProfId = prof.id;
 
     app.querySelector('.shell').addEventListener('click', function (e) {
-      var b = e.target.closest('[data-act], [data-theme-toggle]');
+      var b = e.target.closest('[data-act]');
       if (!b) return;
-      if (b.hasAttribute('data-theme-toggle')) return toggleTheme();
       var act = b.getAttribute('data-act');
       if (act === 'restore') restoreDemo();
       else if (act === 'logout') logout();
       else if (act === 'search') TC.palette.open();
       else if (act === 'more') openMore();
     });
-
   }
 
   function onScroll() {
@@ -195,10 +173,10 @@ window.TC = window.TC || {};
   /* ---------- Routing ---------- */
   function pageFor(path) {
     if (path === '/painel') return { title: 'Painel', render: TC.pages.painel };
-    if (path === '/plano' && TC.pages.plano) return { title: 'Plano de Aula', render: TC.pages.plano };
-    if (path === '/agenda' && TC.pages.agenda) return { title: 'Agenda Semanal', render: TC.pages.agenda };
+    if (path === '/plano') return { title: 'Plano de Aula', render: TC.pages.plano };
+    if (path === '/agenda') return { title: 'Agenda Semanal', render: TC.pages.agenda };
     var key = path.slice(1);
-    if (CADASTROS.indexOf(key) >= 0 && TC.crud) {
+    if (CADASTROS.indexOf(key) >= 0) {
       return { title: TC.entities[key].title, render: function (root, q) { TC.crud.render(root, key, q); } };
     }
     return { title: 'Página não encontrada', render: notFound };
@@ -235,6 +213,7 @@ window.TC = window.TC || {};
     view.className = 'view';
     main.replaceChildren(view);
     page.render(view, route.query || {});
+    TC.ui.countUp(view);
     updateNav(route.path);
     document.title = page.title + ' · Teacher Class';
     if (!firstRender) {
@@ -263,7 +242,7 @@ window.TC = window.TC || {};
     var skip = document.querySelector('.skip-link');
     skip.addEventListener('click', function (e) {
       e.preventDefault();
-      var target = document.getElementById('main') || document.querySelector('[data-skip-target]');
+      var target = document.getElementById('main');
       if (target) { target.setAttribute('tabindex', '-1'); target.focus(); }
     });
 
@@ -271,7 +250,7 @@ window.TC = window.TC || {};
   }
 
   TC.app = {
-    currentProf: currentProf, toggleTheme: toggleTheme, restoreDemo: restoreDemo, logout: logout,
+    currentProf: currentProf, restoreDemo: restoreDemo, logout: logout,
     refresh: function () { render(TC.router.parse()); },
     login: function (profId) {
       S.session.set(profId);

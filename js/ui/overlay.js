@@ -13,6 +13,7 @@ window.TC = window.TC || {};
   function setInert() {
     var app = document.getElementById('app');
     if (app) app.inert = stack.length > 0;
+    document.body.classList.toggle('has-overlay', stack.length > 0);
     stack.forEach(function (o, i) { o.el.inert = i !== stack.length - 1; });
   }
 
