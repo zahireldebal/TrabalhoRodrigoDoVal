@@ -1,0 +1,149 @@
+/* Design tokens: fonts, brand palette, light & dark themes */
+
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/inter-var-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  src: url("../assets/fonts/plus-jakarta-sans-var-latin.woff2") format("woff2");
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Brand (taken from the logo) */
+  --navy-950: #0B1229;
+  --navy-900: #111B3D;
+  --navy-800: #16224A;
+  --navy-700: #1B2A55;
+  --navy-600: #26386B;
+  --navy-500: #34497F;
+  --orange-500: #F28C28;
+  --orange-600: #DD7612;
+  --green-500: #3BAA6E;
+  --blue-500: #2F8FD1;
+
+  /* Course identity colors (always paired with a pattern + code text) */
+  --c1: #2F8FD1;
+  --c2: #F28C28;
+  --c3: #3BAA6E;
+  --c4: #8B6CE0;
+  --c5: #E0517A;
+
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+  --dur-fast: 140ms;
+  --dur: 220ms;
+  --dur-slow: 360ms;
+  --sidebar-w: 264px;
+  --rail-w: 80px;
+  --topbar-h: 68px;
+  --bottomnav-h: 64px;
+}
+
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #F6F8FC;
+  --bg-accent: #EEF2FA;
+  --surface: #FFFFFF;
+  --surface-2: #F3F6FB;
+  --surface-3: #E8EDF6;
+  --border: #DFE5F0;
+  --border-strong: #BFC9DC;
+  --text: #14213F;
+  --text-muted: #55617E;
+  --heading: #14213F;
+
+  --primary: var(--orange-500);
+  --primary-hover: var(--orange-600);
+  --on-primary: #14213F;
+  --brand: var(--navy-700);
+  --brand-ink: #1B2A55;
+  --accent-ink: #A8520C;
+  --accent-soft: #FEEEDD;
+
+  --success: var(--green-500);
+  --success-ink: #1C7445;
+  --success-soft: #E0F4E9;
+  --info: var(--blue-500);
+  --info-ink: #1A6AA2;
+  --info-soft: #DFEFFB;
+  --danger: #D64541;
+  --danger-ink: #B02925;
+  --danger-soft: #FCE6E5;
+  --warning-ink: #855400;
+  --warning-soft: #FFF2D9;
+
+  --focus: #1F7DC4;
+  --shadow-xs: 0 1px 2px rgba(20, 33, 63, .06);
+  --shadow-sm: 0 1px 2px rgba(20, 33, 63, .05), 0 2px 6px rgba(20, 33, 63, .06);
+  --shadow: 0 2px 4px rgba(20, 33, 63, .04), 0 8px 24px rgba(20, 33, 63, .08);
+  --shadow-lg: 0 24px 60px rgba(13, 22, 48, .22);
+
+  --sidebar-bg: #16224A;
+  --sidebar-bg-2: #1B2A55;
+  --sidebar-text: #C9D2EC;
+  --sidebar-muted: #9AA7CD;
+  --overlay: rgba(11, 18, 41, .52);
+  --skeleton: #E8EDF6;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0B1229;
+  --bg-accent: #0F1834;
+  --surface: #131C3B;
+  --surface-2: #18234A;
+  --surface-3: #1F2C58;
+  --border: #26335F;
+  --border-strong: #3A4A80;
+  --text: #E8ECF7;
+  --text-muted: #A5AFCE;
+  --heading: #F4F6FC;
+
+  --primary: #F59A40;
+  --primary-hover: #F8AE63;
+  --on-primary: #111B3D;
+  --brand: #8FB3FF;
+  --brand-ink: #C7D6FF;
+  --accent-ink: #F7AE66;
+  --accent-soft: rgba(242, 140, 40, .16);
+
+  --success-ink: #6BD9A0;
+  --success-soft: rgba(59, 170, 110, .18);
+  --info-ink: #7CC2F5;
+  --info-soft: rgba(47, 143, 209, .2);
+  --danger: #F06B66;
+  --danger-ink: #FF9893;
+  --danger-soft: rgba(214, 69, 65, .2);
+  --warning-ink: #FFCF7A;
+  --warning-soft: rgba(255, 191, 71, .16);
+
+  --focus: #7CC2F5;
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, .3);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3), 0 2px 6px rgba(0, 0, 0, .25);
+  --shadow: 0 2px 4px rgba(0, 0, 0, .25), 0 10px 28px rgba(0, 0, 0, .35);
+  --shadow-lg: 0 24px 60px rgba(0, 0, 0, .55);
+
+  --sidebar-bg: #0E1633;
+  --sidebar-bg-2: #121C3F;
+  --sidebar-text: #C9D2EC;
+  --sidebar-muted: #8E9BC4;
+  --overlay: rgba(3, 6, 18, .66);
+  --skeleton: #1F2C58;
+}

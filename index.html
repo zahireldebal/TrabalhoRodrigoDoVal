@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Teacher Class</title>
+  <meta name="description" content="Teacher Class — protótipo para professores organizarem cursos, matérias, turmas, períodos, plano de aula e agenda semanal.">
+  <meta name="theme-color" content="#1B2A55">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <!-- Apply the saved theme before the first paint (no flash). -->
+  <script>
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem('tc-theme'); } catch (e) { /* storage blocked */ }
+      if (t !== 'light' && t !== 'dark') {
+        t = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Pular para o conteúdo</a>
+  <div id="app"></div>
+  <div id="toasts" class="toasts" aria-live="polite" aria-atomic="false"></div>
+  <noscript>
+    <div class="noscript">
+      <h1>Teacher Class</h1>
+      <p>Para usar o protótipo, ative o JavaScript no seu navegador.</p>
+    </div>
+  </noscript>
+
+  <!-- Classic scripts (no ES modules) so the prototype also works from file:// -->
+  <script src="js/core/util.js"></script>
+  <script src="js/data/seed.js"></script>
+  <script src="js/core/store.js"></script>
+  <script src="js/core/domain.js"></script>
+  <script src="js/core/router.js"></script>
+  <script src="js/ui/icons.js"></script>
+  <script src="js/ui/components.js"></script>
+  <script src="js/ui/overlay.js"></script>
+  <script src="js/ui/forms.js"></script>
+  <script src="js/ui/palette.js"></script>
+  <script src="js/pages/entities.js"></script>
+  <script src="js/pages/login.js"></script>
+  <script src="js/pages/painel.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
