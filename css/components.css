@@ -428,7 +428,7 @@
   color: var(--accent-ink); font-weight: 600; text-decoration: underline; text-underline-offset: 2px;
 }
 
-.table-wrap { overflow-x: auto; }
+.table-wrap { position: relative; overflow-x: auto; }
 .data-table { font-size: .9rem; }
 .data-table th {
   padding: 10px 16px;
@@ -492,7 +492,7 @@ th[aria-sort] .th-sort svg { opacity: 1; color: var(--accent-ink); }
 .count-pill svg { width: 15px; height: 15px; }
 
 /* Table → cards on small screens */
-@media (max-width: 720px) {
+@media (max-width: 860px) {
   .data-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
   .data-table, .data-table tbody, .data-table tr, .data-table td { display: block; width: 100%; }
   .data-table tbody { display: grid; gap: 12px; padding: 4px 14px 16px; }

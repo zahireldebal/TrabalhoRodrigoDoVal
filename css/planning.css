@@ -188,8 +188,8 @@
 .ag-col ul { position: absolute; inset: 0; }
 .ag-now { position: absolute; left: 0; right: 0; z-index: 2; height: 2px; background: var(--danger); }
 .ag-now::before { content: ""; position: absolute; left: -5px; top: -4px; width: 10px; height: 10px; border-radius: 50%; background: var(--danger); }
-.ag-now span { position: absolute; right: 4px; top: -18px; padding: 0 6px; border-radius: 6px; background: var(--danger); color: #fff; font-size: .66rem; font-weight: 700; }
-:root[data-theme="dark"] .ag-now span { color: #1A0F12; }
+.ag-now span { position: absolute; right: 4px; top: -18px; padding: 0 6px; border-radius: 6px; background: var(--danger-ink); color: #fff; font-size: .66rem; font-weight: 700; }
+:root[data-theme="dark"] .ag-now span { background: var(--danger); color: #1A0F12; }
 
 .ev {
   position: absolute;

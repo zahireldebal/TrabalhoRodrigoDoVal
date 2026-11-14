@@ -139,7 +139,7 @@ TC.pages = TC.pages || {};
           }).join('') + '</div>' +
           days.map(function (x) {
             return '<div class="ag-col' + (x.today ? ' is-today' : '') + '" style="height:' + gridH + 'px">' +
-              '<h3 class="sr-only">' + esc(U.fmtWeekday(x.date)) + ' — ' + U.plural(x.list.length, 'aula', 'aulas') + '</h3>' +
+              '<h2 class="sr-only">' + esc(U.fmtWeekday(x.date)) + ' — ' + U.plural(x.list.length, 'aula', 'aulas') + '</h2>' +
               (x.today && showNow ? '<span class="ag-now" style="top:' + nowTop + 'px" aria-hidden="true"><span>Agora</span></span>' : '') +
               (x.list.length ? '<ul>' + x.list.map(function (a) { return '<li>' + eventHtml(a) + '</li>'; }).join('') + '</ul>' : '') +
               '</div>';
