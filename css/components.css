@@ -684,7 +684,7 @@ th[aria-sort] .th-sort svg { opacity: 1; color: var(--accent-ink); }
 .toasts {
   position: fixed;
   right: 20px;
-  bottom: 20px;
+  top: 16px;
   z-index: 200;
   display: grid;
   gap: 10px;
@@ -722,10 +722,14 @@ th[aria-sort] .th-sort svg { opacity: 1; color: var(--accent-ink); }
 .toast-error .t-icon { background: var(--danger-soft); color: var(--danger-ink); }
 .toast-info { border-left-color: var(--info); }
 .toast-info .t-icon { background: var(--info-soft); color: var(--info-ink); }
-@keyframes toast-in { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
+@keyframes toast-in { from { opacity: 0; transform: translateY(-14px) scale(.98); } to { opacity: 1; transform: none; } }
 @keyframes toast-out { to { opacity: 0; transform: translateX(20px); } }
 @media (max-width: 767px) {
-  .toasts { left: 16px; right: 16px; width: auto; bottom: calc(var(--bottomnav-h) + 14px); }
+  .toasts { left: 12px; right: 12px; top: 10px; width: auto; }
+  .toolbar { padding: 14px; gap: 10px; }
+  .toolbar .search-input { flex-basis: 100%; }
+  .toolbar .field { flex: 1 1 140px; }
+  .list-meta { padding: 10px 16px; }
 }
 
 /* ---------- Command palette ---------- */
